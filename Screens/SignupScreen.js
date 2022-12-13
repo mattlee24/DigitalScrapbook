@@ -11,19 +11,75 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { Firestore } from "firebase/firestore";
 import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
 import HomeStack from "../Navigation/HomeStack";
 import { BlurView } from 'expo-blur';
 import colors from "../colors";
+import * as ImagePicker from "expo-image-picker";
 
-export default function LoginScreen({ navigation }) {
+export default function SignupScreen({ navigation }) {
 
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [signupError, setSignupError] = useState("");
+  const [profilePic, setprofilePic] = useState(null);
+
+  const onChooseImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    const uploadImage = async (uri, imageName) => {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+  
+      const ref = firebase.storage().ref().child(`ProfilePictures/${imageName}`);
+      await ref.put(blob);
+      const donwloadURL = await ref.getDownloadURL();
+      return setprofilePic(donwloadURL);
+    };
+
+    if (!result.canceled) {
+      uploadImage(result.assets.uri, email)
+        .then(() => {
+          console.log("It works!");
+        })
+        .catch((error) => {
+          console.log("it does not work");
+          console.error(error);
+        });
+    }
+  };
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app)
+
+  const onHandleSignup = () => {
+    createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) =>{
+      const user = userCredential.user;
+      const db = Firestore(auth);
+      db.collection("users").doc(user.uid).set({
+        email: currentUser.email,
+        lastName: lastName,
+        firstName: firstName,
+        password: password,
+        profilePic: profilePic
+      });
+      Alert.alert('New user created with the email: ', user.email)
+      navigation.navigate("Login")
+    }) 
+    .catch(error => {
+      Alert.alert(error.message)
+    })
+  };
 
   const onLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
@@ -43,7 +99,7 @@ export default function LoginScreen({ navigation }) {
       <View style={styles.container}>
         {/* <Image source={{ uri }} style={[styles.image, StyleSheet.absoluteFill]}/> */}
         <View style={styles.lightimage}>
-          <Text style={styles.lgntitle}>Login</Text>
+          <Text style={styles.lgntitle}>Create Account</Text>
           <BlurView intensity={0} style={styles.blur}>
             <StatusBar style="dark-content" />
             <View style={styles.lightInput}>
@@ -105,7 +161,7 @@ export default function LoginScreen({ navigation }) {
             ><Text style={styles.textColor}>Login</Text>
             </TouchableOpacity>
             <TouchableOpacity
-                onPress={() => navigation.navigate("SignUp")}
+                onPress={() => navigation.navigate("Login")}
                 style={styles.button}
               ><Text style={styles.textColor}>Create Account</Text>
               </TouchableOpacity>

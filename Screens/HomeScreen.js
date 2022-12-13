@@ -16,6 +16,7 @@ const HomeScreen = ({ navigation }) => {
     auth.signOut()
     .then(() => {
       navigation.navigate(AuthStack)
+      Alert.alert('Successfully Logged out')
     })
   };
 

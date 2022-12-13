@@ -23,17 +23,6 @@ function OverallStack() {
 
 export default function App() {
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app)
-
-  onAuthStateChanged(auth, (user) => {
-    if (user){
-      Alert.alert('Logged in with the email: ', user.email)
-    } else{
-      Alert.alert('Successfully Logged out')
-    }
-  })
-
   return (
     <NavigationContainer>
        <OverallStack />

@@ -5,11 +5,12 @@ import {
   Text,
   View,
   useColorScheme,
-  ImageBackground,
   Image,
   Dimensions, 
   Button,
-  Alert
+  Alert,
+  Pressable,
+  TouchableOpacity
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
@@ -17,8 +18,13 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, on
 import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
 import HomeStack from "../Components/HomeStack";
+import { BlurView } from 'expo-blur';
+import colors from "../colors";
 
 export default function LoginScreen({ navigation }) {
+
+  const uri = 'https://wallpaperaccess.com/full/31193.jpg'
+
   const colourScheme = useColorScheme();
   const isDarkMode = colourScheme === "dark";
   const containerStyle =
@@ -27,7 +33,6 @@ export default function LoginScreen({ navigation }) {
     colourScheme === "dark" ? styles.darkimage : styles.lightimage;
   const titleStyle =
     colourScheme === "dark" ? styles.darktitle : styles.lighttitle;
-  const orStyle = colourScheme === "dark" ? styles.darkOr : styles.lightOr;
   const inputStyle =
     colourScheme === "dark" ? styles.darkInput : styles.lightInput;
   const forgotpasswordStyle =
@@ -53,6 +58,7 @@ export default function LoginScreen({ navigation }) {
     signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
+      Alert.alert('Logged in with the email: ', user.email)
       navigation.navigate(HomeStack)
     })
     .catch(error => {
@@ -61,131 +67,122 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <View style={[containerStyle, {
-      height: windowHeight,
-      width: windowWidth
-    }]}>
-      <Text style={[titleStyle, styles.title]}>Login</Text>
-      <ImageBackground style={imageStyle}>
-        <StatusBar style="dark-content" />
-        <View style={inputStyle}>
-          <MaterialCommunityIcons
-            style={styles.iconstyle}
-            name="email"
-            size={20}
-            color={isDarkMode ? "white" : "#4169E1"}
-          />
-          <TextInput
-            inputStyle={{
-              fontSize: 14,
-            }}
-            color={isDarkMode ? "white" : "#4169E1"}
-            selectionColor={isDarkMode ? "white" : "#4169E1"}
-            leftIcon="email"
-            placeholderTextColor={isDarkMode ? "white" : "#4169E1"}
-            placeholder="Email"
-            autoCapitalize="none"
-            keyboardType="email-address"
-            textContentType="emailAddress"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-          />
-        </View>
-        <View style={inputStyle}>
-          <MaterialCommunityIcons
-            style={styles.iconstyle}
-            name="lock"
-            size={20}
-            color={isDarkMode ? "white" : "#4169E1"}
-          />
-          <TextInput
-            inputStyle={{
-              fontSize: 14,
-            }}
-            color={isDarkMode ? "white" : "#4169E1"}
-            selectionColor={isDarkMode ? "white" : "#4169E1"}
-            placeholderTextColor={isDarkMode ? "white" : "#4169E1"}
-            leftIcon="lock"
-            placeholder="Password"
-            autoCapitalize="none"
-            autoCorrect={false}
-            secureTextEntry={true}
-            textContentType="password"
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-          />
-        </View>
-        <Text
-          onPress={() => navigation.navigate("ForgotPassword")}
-          style={forgotpasswordStyle}
-        >
-          Forgot/Change Password
-        </Text>
-        <Button
-          onPress={onLogin}
-          type="outline"
-          raised
-          buttonStyle={{
-            backgroundColor: isDarkMode ? "white" : "#4169E1",
-            borderColor: isDarkMode ? "white" : "#4169E1",
-            borderRadius: 15
-          }}
-          titleStyle={{
-            color: isDarkMode ? "#4169E1" : "white",
-          }}
-          title="Login"
-          titleSize={20}
-          containerStyle={{
-            marginBottom: 20,
-            borderRadius: 15
-          }}
-        />
-        <View style={styles.textview}>
-          <Text style={signupStyle}> Dont have an account?</Text>
-          <Text
+    <View style={styles.container}>
+      <Image source={{ uri }} style={[styles.image, StyleSheet.absoluteFill]}/>
+      <View style={imageStyle}>
+        <BlurView intensity={100} style={styles.blur}>
+          <Text style={[titleStyle, styles.title]}>Login</Text>
+          <StatusBar style="dark-content" />
+          <View style={inputStyle}>
+            <MaterialCommunityIcons
+              style={styles.iconstyle}
+              name="email"
+              size={20}
+              color={isDarkMode ? "white" : "#4169E1"}
+            />
+            <TextInput
+              inputStyle={{
+                fontSize: 14,
+              }}
+              color={isDarkMode ? "white" : "#4169E1"}
+              selectionColor={isDarkMode ? "white" : "#4169E1"}
+              leftIcon="email"
+              placeholderTextColor={isDarkMode ? "white" : "#4169E1"}
+              placeholder="Email"
+              autoCapitalize="none"
+              keyboardType="email-address"
+              textContentType="emailAddress"
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+            />
+          </View>
+          <View style={inputStyle}>
+            <MaterialCommunityIcons
+              style={styles.iconstyle}
+              name="lock"
+              size={20}
+              color={isDarkMode ? "white" : "#4169E1"}
+            />
+            <TextInput
+              inputStyle={{
+                fontSize: 14,
+              }}
+              color={isDarkMode ? "white" : "#4169E1"}
+              selectionColor={isDarkMode ? "white" : "#4169E1"}
+              placeholderTextColor={isDarkMode ? "white" : "#4169E1"}
+              leftIcon="lock"
+              placeholder="Password"
+              autoCapitalize="none"
+              autoCorrect={false}
+              secureTextEntry={true}
+              textContentType="password"
+              value={password}
+              onChangeText={(text) => setPassword(text)}
+            />
+          </View>
+          <TouchableOpacity
+            onPress={onLogin}
+            style={styles.button}
+          ><Text>Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => navigation.navigate("Signup")}
-            style={[signupStyle, styles.signupLight]}
+            style={styles.button}
+          ><Text>Create Account</Text>
+          </TouchableOpacity>
+          <Text
+            onPress={() => navigation.navigate("ForgotPassword")}
+            style={forgotpasswordStyle}
           >
-            Create New One
+            Forgot/Change Password
           </Text>
-        </View>
-      </ImageBackground>
+        </BlurView>
+      </View>
     </View>
   );
 }
 
 
 const styles = StyleSheet.create({
-  lightcontainer: {
+  container: {
     flex: 1,
-    backgroundColor: "white",
-    paddingTop: (Platform.OS === 'ios') ? 100 : 50,
-    paddingHorizontal: 20
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignContent: "center",
   },
-  darkcontainer: {
-    flex: 1,
-    backgroundColor: "#4169E1",
-    paddingBottom: 100,
-    paddingTop: (Platform.OS === 'ios') ? 100 : 50,
-    paddingHorizontal: 20,
+  image: {
+    width: "100%",
+    height: "100%",
+    resizeMode: 'cover',
   },
   lightimage: {
     flex: 1,
-    padding: 10,
-    backgroundColor: "white",
-    borderRadius: 100,
+    width: "100%",
+    justifyContent: "center",
   },
-  darkimage: {
-    flex: 1,
-    padding: 10,
-    backgroundColor: "#4169E1",
-    borderRadius: 100,
+  blur: {
+    marginVertical: 100,
+    paddingHorizontal: 20,
+    paddingVertical: 40,
+    width:"90%",
+    alignSelf: "center",
+    borderWidth: 3,
+    borderColor: colors.baige
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: colors.lightBlue,
+    marginTop: 10
   },
   title: {
     fontSize: 100,
     fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
     width: "100%",
-    paddingTop: (Platform.OS === 'ios') ? 100 : 50,
     paddingBottom: (Platform.OS === 'ios') ? 10 : 10,
     textAlign: "center",
     textShadowColor: "grey",
@@ -203,7 +200,9 @@ const styles = StyleSheet.create({
     textAlign: "right",
     marginBottom: 20,
     fontWeight: "bold",
-    textDecorationLine: "underline"
+    textDecorationLine: "underline",
+    textAlign: 'center',
+    marginTop: 20
   },
   darkforgotpassword: {
     color: "white",

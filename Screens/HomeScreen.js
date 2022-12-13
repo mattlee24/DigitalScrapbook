@@ -2,10 +2,10 @@ import { Alert, Button, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import colors from '../colors'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { getAuth, signOut } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
-import AuthStack from '../Components/AuthStack';
+import AuthStack from '../Navigation/AuthStack';
 
 const HomeScreen = ({ navigation }) => {
 

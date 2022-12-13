@@ -4,22 +4,20 @@ import {
   StyleSheet,
   Text,
   View,
-  useColorScheme,
   Alert,
-  TouchableOpacity
+  TouchableOpacity,
+  KeyboardAvoidingView
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
-import HomeStack from "../Components/HomeStack";
+import HomeStack from "../Navigation/HomeStack";
 import { BlurView } from 'expo-blur';
 import colors from "../colors";
 
 export default function LoginScreen({ navigation }) {
-
-  const uri = 'https://free4kwallpapers.com/uploads/originals/2020/10/25/colourful-light-refraction-wallpaper.jpg'
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,78 +38,81 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      {/* <Image source={{ uri }} style={[styles.image, StyleSheet.absoluteFill]}/> */}
-      <View style={styles.lightimage}>
-        <BlurView intensity={100} style={styles.blur}>
-          <Text style={styles.title}>Login</Text>
-          <StatusBar style="dark-content" />
-          <View style={styles.lightInput}>
-            <MaterialCommunityIcons
-              style={styles.iconstyle}
-              name="email"
-              size={20}
-              color={colors.navy}
-            />
-            <TextInput
-              inputStyle={{
-                fontSize: 14,
-              }}
-              color={colors.navy}
-              leftIcon="email"
-              placeholderTextColor={colors.lightBlue}
-              placeholder="Email"
-              autoCapitalize="none"
-              keyboardType="email-address"
-              textContentType="emailAddress"
-              value={email}
-              onChangeText={(text) => setEmail(text)}
-            />
-          </View>
-          <View style={styles.lightInput}>
-            <MaterialCommunityIcons
-              style={styles.iconstyle}
-              name="lock"
-              size={20}
-              color={colors.navy}
-            />
-            <TextInput
-              inputStyle={{
-                fontSize: 14,
-              }}
-              color={colors.navy}
-              placeholderTextColor={colors.lightBlue}
-              leftIcon="lock"
-              placeholder="Password"
-              autoCapitalize="none"
-              autoCorrect={false}
-              secureTextEntry={true}
-              textContentType="password"
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-            />
-          </View>
-          <View style={styles.loginRow}>
+    <KeyboardAvoidingView style={styles.container1}  behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      <Text style={styles.title}>Welcome to Your Digital Scrapbook</Text>
+      <View style={styles.container}>
+        {/* <Image source={{ uri }} style={[styles.image, StyleSheet.absoluteFill]}/> */}
+        <View style={styles.lightimage}>
+          <Text style={styles.lgntitle}>Login</Text>
+          <BlurView intensity={0} style={styles.blur}>
+            <StatusBar style="dark-content" />
+            <View style={styles.lightInput}>
+              <MaterialCommunityIcons
+                style={styles.iconstyle}
+                name="email"
+                size={20}
+                color={colors.navy}
+              />
+              <TextInput
+                inputStyle={{
+                  fontSize: 14,
+                }}
+                color={colors.navy}
+                leftIcon="email"
+                placeholderTextColor={colors.grey}
+                placeholder="Email"
+                cursorColor={colors.navy}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                textContentType="emailAddress"
+                value={email}
+                onChangeText={(text) => setEmail(text)}
+              />
+            </View>
+            <View style={styles.lightInput}>
+              <MaterialCommunityIcons
+                style={styles.iconstyle}
+                name="lock"
+                size={20}
+                color={colors.navy}
+              />
+              <TextInput
+                inputStyle={{
+                  fontSize: 14,
+                }}
+                color={colors.navy}
+                placeholderTextColor={colors.grey}
+                leftIcon="lock"
+                placeholder="Password"
+                cursorColor={colors.navy}
+                autoCapitalize="none"
+                autoCorrect={false}
+                secureTextEntry={true}
+                textContentType="password"
+                value={password}
+                onChangeText={(text) => setPassword(text)}
+              />
+            </View>
+            <Text
+              onPress={() => navigation.navigate("ForgotPassword")}
+              style={styles.forgotpassword}
+            >
+              Forgot Password?
+            </Text>
             <TouchableOpacity
               onPress={onLogin}
               style={styles.button}
             ><Text style={styles.textColor}>Login</Text>
             </TouchableOpacity>
-            <Text
-              onPress={() => navigation.navigate("ForgotPassword")}
-              style={styles.lightforgotpassword}
-            >
-              Forgot Password
-            </Text>
-          </View>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Signup")}
-            style={styles.button}
-          ><Text style={styles.textColor}>Create Account</Text>
-          </TouchableOpacity>
-        </BlurView>
+            <TouchableOpacity
+                onPress={() => navigation.navigate("Signup")}
+                style={styles.button}
+              ><Text style={styles.textColor}>Create Account</Text>
+              </TouchableOpacity>
+          </BlurView>
+        </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -119,9 +120,12 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignContent: "center",
+    backgroundColor: colors.baige,
+    justifyContent: "flex-end",
+  },
+  container1: {
+    flex: 1,
+    backgroundColor: colors.baige,
   },
   image: {
     width: "100%",
@@ -129,43 +133,52 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   lightimage: {
-    flex: 1,
     width: "100%",
-    justifyContent: "center",
-    backgroundColor: colors.baige,
+    backgroundColor: colors.grey,
+    borderTopRightRadius: 50,
+    borderTopLeftRadius: 50,
+    paddingVertical: 10,
+    
   },
   blur: {
-    marginVertical: 100,
-    paddingVertical: 40,
-    width:"100%",
+    marginVertical: 10,
+    paddingVertical: 10,
+    width:"90%",
     alignSelf: "center",
-    borderWidth: 3,
-    borderColor: colors.navy
   },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 12,
     paddingHorizontal: 32,
-    marginHorizontal: 100,
-    borderRadius: 4,
+    borderRadius: 15,
     elevation: 3,
-    backgroundColor: colors.baige,
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    backgroundColor: colors.grey,
     borderColor: colors.navy,
     borderWidth: 1,
     marginTop: 10,
   },
   loginRow: {
-
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginBottom: 20
   },
   textColor: {
     color: colors.navy
   },
   title: {
-    fontSize: 100,
+    fontSize: 50,
+    paddingHorizontal: 15,
     fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
     width: "100%",
-    paddingBottom: (Platform.OS === 'ios') ? 10 : 10,
+    marginTop: 100,
     textAlign: "center",
     textShadowColor: "grey",
     textShadowRadius: 10,
@@ -175,24 +188,41 @@ const styles = StyleSheet.create({
     },
     color: colors.navy
   },
-  lightforgotpassword: {
+  lgntitle: {
+    fontSize: 50,
+    fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
+    width: "100%",
+    textAlign: "center",
+    textShadowColor: "grey",
+    textShadowRadius: 10,
+    textShadowOffset: {
+      width: 3,
+      height: 3
+    },
+    color: colors.navy
+  },
+  forgotpassword: {
     color: colors.navy,
     textAlign: "right",
-    marginBottom: 20,
     fontWeight: "bold",
     textDecorationLine: "underline",
     textAlign: 'center',
-    marginTop: 20
+    marginRight: 10
   },
   lightInput: {
     flexDirection: "row",
     marginBottom: 10,
-    borderTopWidth: 0.5,
-    borderTopColor: colors.nacy,
-    borderBottomWidth: 0.5,
-    borderBottomColor: colors.nacy,
     backgroundColor: colors.baige,
     paddingLeft: 20,
+    borderRadius: 15,
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    elevation: 5
   },
   iconstyle: { margin: 10 },
   textview: {

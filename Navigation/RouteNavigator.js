@@ -1,7 +1,7 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeStack from '../Components/HomeStack';
-import AuthStack from '../Components/AuthStack';
+import HomeStack from './HomeStack';
+import AuthStack from './AuthStack';
 
 const RouteNavigator = () => {
     const Stack = createStackNavigator();

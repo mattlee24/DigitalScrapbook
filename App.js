@@ -1,31 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Button, Image, View, Platform, StyleSheet, ScrollView, TouchableOpacity, LogBox, ActivityIndicator, Alert } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import colors from './colors';
-import HomeStack from './Components/HomeStack';
-import AuthStack from './Components/AuthStack';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { firebaseConfig } from "./Config/firebase";
-import { initializeApp } from 'firebase/app';
-import { createStackNavigator } from '@react-navigation/stack';
-
-function OverallStack() {
-  const Stack = createStackNavigator();
-  return (
-    <Stack.Navigator screenOptions={() => ({headerShown: false})}>
-      <Stack.Screen name="AuthStack" component={AuthStack}/>
-      <Stack.Screen name="HomeStack" component={HomeStack} />
-    </Stack.Navigator> 
-  )
-}
+import RouteNavigator from './Navigation/RouteNavigator';
 
 export default function App() {
 
   return (
     <NavigationContainer>
-       <OverallStack />
+       <RouteNavigator />
     </NavigationContainer>
   );
 
@@ -62,20 +43,20 @@ export default function App() {
 
 }
 
-const styles = StyleSheet.create({
-  // imageView: {
-  //   backgroundColor: colors.orange,
-  //   width: "98%",
-  //   height: 200,
-  //   borderWidth: 5,
-  //   borderRadius: 20,
-  //   justifyContent: "center",
-  // },
-  // imageStyle: {
-  //   width: "90%", 
-  //   height: "90%",
-  //   color: "orange",
-  //   borderRadius: 20,
-  //   alignSelf: "center",
-  // }
-});
+// const styles = StyleSheet.create({
+//   // imageView: {
+//   //   backgroundColor: colors.orange,
+//   //   width: "98%",
+//   //   height: 200,
+//   //   borderWidth: 5,
+//   //   borderRadius: 20,
+//   //   justifyContent: "center",
+//   // },
+//   // imageStyle: {
+//   //   width: "90%", 
+//   //   height: "90%",
+//   //   color: "orange",
+//   //   borderRadius: 20,
+//   //   alignSelf: "center",
+//   // }
+// });

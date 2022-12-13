@@ -5,11 +5,7 @@ import {
   Text,
   View,
   useColorScheme,
-  Image,
-  Dimensions, 
-  Button,
   Alert,
-  Pressable,
   TouchableOpacity
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -23,36 +19,13 @@ import colors from "../colors";
 
 export default function LoginScreen({ navigation }) {
 
-  const uri = 'https://wallpaperaccess.com/full/31193.jpg'
-
-  const colourScheme = useColorScheme();
-  const isDarkMode = colourScheme === "dark";
-  const containerStyle =
-    colourScheme === "dark" ? styles.darkcontainer : styles.lightcontainer;
-  const imageStyle =
-    colourScheme === "dark" ? styles.darkimage : styles.lightimage;
-  const titleStyle =
-    colourScheme === "dark" ? styles.darktitle : styles.lighttitle;
-  const inputStyle =
-    colourScheme === "dark" ? styles.darkInput : styles.lightInput;
-  const forgotpasswordStyle =
-    colourScheme === "dark"
-      ? styles.darkforgotpassword
-      : styles.lightforgotpassword;
-  const signupStyle =
-  colourScheme === "dark"
-    ? styles.darkSignUp
-    : styles.lightSignUp;
-  const buttonStyle = colourScheme === "dark" ? styles.darkLogin : styles.lightLogin;
+  const uri = 'https://free4kwallpapers.com/uploads/originals/2020/10/25/colourful-light-refraction-wallpaper.jpg'
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app)
-
-  const windowWidth = Dimensions.get('window').width;
-  const windowHeight = Dimensions.get('window').height;
 
   const onLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
@@ -68,26 +41,25 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri }} style={[styles.image, StyleSheet.absoluteFill]}/>
-      <View style={imageStyle}>
+      {/* <Image source={{ uri }} style={[styles.image, StyleSheet.absoluteFill]}/> */}
+      <View style={styles.lightimage}>
         <BlurView intensity={100} style={styles.blur}>
-          <Text style={[titleStyle, styles.title]}>Login</Text>
+          <Text style={styles.title}>Login</Text>
           <StatusBar style="dark-content" />
-          <View style={inputStyle}>
+          <View style={styles.lightInput}>
             <MaterialCommunityIcons
               style={styles.iconstyle}
               name="email"
               size={20}
-              color={isDarkMode ? "white" : "#4169E1"}
+              color={colors.navy}
             />
             <TextInput
               inputStyle={{
                 fontSize: 14,
               }}
-              color={isDarkMode ? "white" : "#4169E1"}
-              selectionColor={isDarkMode ? "white" : "#4169E1"}
+              color={colors.navy}
               leftIcon="email"
-              placeholderTextColor={isDarkMode ? "white" : "#4169E1"}
+              placeholderTextColor={colors.lightBlue}
               placeholder="Email"
               autoCapitalize="none"
               keyboardType="email-address"
@@ -96,20 +68,19 @@ export default function LoginScreen({ navigation }) {
               onChangeText={(text) => setEmail(text)}
             />
           </View>
-          <View style={inputStyle}>
+          <View style={styles.lightInput}>
             <MaterialCommunityIcons
               style={styles.iconstyle}
               name="lock"
               size={20}
-              color={isDarkMode ? "white" : "#4169E1"}
+              color={colors.navy}
             />
             <TextInput
               inputStyle={{
                 fontSize: 14,
               }}
-              color={isDarkMode ? "white" : "#4169E1"}
-              selectionColor={isDarkMode ? "white" : "#4169E1"}
-              placeholderTextColor={isDarkMode ? "white" : "#4169E1"}
+              color={colors.navy}
+              placeholderTextColor={colors.lightBlue}
               leftIcon="lock"
               placeholder="Password"
               autoCapitalize="none"
@@ -120,22 +91,24 @@ export default function LoginScreen({ navigation }) {
               onChangeText={(text) => setPassword(text)}
             />
           </View>
-          <TouchableOpacity
-            onPress={onLogin}
-            style={styles.button}
-          ><Text>Login</Text>
-          </TouchableOpacity>
+          <View style={styles.loginRow}>
+            <TouchableOpacity
+              onPress={onLogin}
+              style={styles.button}
+            ><Text style={styles.textColor}>Login</Text>
+            </TouchableOpacity>
+            <Text
+              onPress={() => navigation.navigate("ForgotPassword")}
+              style={styles.lightforgotpassword}
+            >
+              Forgot Password
+            </Text>
+          </View>
           <TouchableOpacity
             onPress={() => navigation.navigate("Signup")}
             style={styles.button}
-          ><Text>Create Account</Text>
+          ><Text style={styles.textColor}>Create Account</Text>
           </TouchableOpacity>
-          <Text
-            onPress={() => navigation.navigate("ForgotPassword")}
-            style={forgotpasswordStyle}
-          >
-            Forgot/Change Password
-          </Text>
         </BlurView>
       </View>
     </View>
@@ -159,25 +132,34 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     justifyContent: "center",
+    backgroundColor: colors.baige,
   },
   blur: {
     marginVertical: 100,
-    paddingHorizontal: 20,
     paddingVertical: 40,
-    width:"90%",
+    width:"100%",
     alignSelf: "center",
     borderWidth: 3,
-    borderColor: colors.baige
+    borderColor: colors.navy
   },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 12,
     paddingHorizontal: 32,
+    marginHorizontal: 100,
     borderRadius: 4,
     elevation: 3,
-    backgroundColor: colors.lightBlue,
-    marginTop: 10
+    backgroundColor: colors.baige,
+    borderColor: colors.navy,
+    borderWidth: 1,
+    marginTop: 10,
+  },
+  loginRow: {
+
+  },
+  textColor: {
+    color: colors.navy
   },
   title: {
     fontSize: 100,
@@ -190,13 +172,11 @@ const styles = StyleSheet.create({
     textShadowOffset: {
       width: 3,
       height: 3
-    }
-    
+    },
+    color: colors.navy
   },
-  darktitle: { color: "white" },
-  lighttitle: { color: "#4169E1" },
   lightforgotpassword: {
-    color: "#4169E1",
+    color: colors.navy,
     textAlign: "right",
     marginBottom: 20,
     fontWeight: "bold",
@@ -204,44 +184,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20
   },
-  darkforgotpassword: {
-    color: "white",
-    textAlign: "right",
-    marginBottom: 20,
-    fontWeight: "bold",
-    textDecorationLine: "underline"
-  },
-  darkInput: {
-    flexDirection: "row",
-    marginBottom: 10,
-    borderWidth: 2,
-    borderRadius: 15,
-    borderColor: "#4169E1",
-    backgroundColor: "#4169E1",
-    shadowColor: "black",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 5,
-    elevation: 5,
-  },
   lightInput: {
     flexDirection: "row",
     marginBottom: 10,
-    borderWidth: 2,
-    borderRadius: 15,
-    borderColor: "white",
-    backgroundColor: "white",
-    shadowColor: "black",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 5,
-    elevation: 5,
+    borderTopWidth: 0.5,
+    borderTopColor: colors.nacy,
+    borderBottomWidth: 0.5,
+    borderBottomColor: colors.nacy,
+    backgroundColor: colors.baige,
+    paddingLeft: 20,
   },
   iconstyle: { margin: 10 },
   textview: {
@@ -249,14 +200,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexDirection: "row",
     justifyContent: "center",
-  },
-  lightSignUp: {
-    color: "#4169E1",
-    margin: 5,
-  },
-  darkSignUp: {
-    color: "white",
-    margin: 5,
   },
   signupLight: {
     fontWeight: "600",

@@ -16,6 +16,7 @@ import { initializeApp } from 'firebase/app';
 import HomeStack from "../Navigation/HomeStack";
 import { BlurView } from 'expo-blur';
 import colors from "../colors";
+import Book from "../Components/Book";
 
 export default function LoginScreen({ navigation }) {
 
@@ -40,11 +41,12 @@ export default function LoginScreen({ navigation }) {
   return (
     <KeyboardAvoidingView style={styles.container1}  behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <Text style={styles.title}>Welcome to Your Digital Scrapbook</Text>
+      <Book />
       <View style={styles.container}>
         {/* <Image source={{ uri }} style={[styles.image, StyleSheet.absoluteFill]}/> */}
         <View style={styles.lightimage}>
           <Text style={styles.lgntitle}>Login</Text>
-          <BlurView intensity={0} style={styles.blur}>
+          <View style={styles.blur}>
             <StatusBar style="dark-content" />
             <View style={styles.lightInput}>
               <MaterialCommunityIcons
@@ -59,7 +61,7 @@ export default function LoginScreen({ navigation }) {
                 }}
                 color={colors.navy}
                 leftIcon="email"
-                placeholderTextColor={colors.grey}
+                placeholderTextColor={colors.lightnavy}
                 placeholder="Email"
                 cursorColor={colors.navy}
                 autoCapitalize="none"
@@ -81,7 +83,7 @@ export default function LoginScreen({ navigation }) {
                   fontSize: 14,
                 }}
                 color={colors.navy}
-                placeholderTextColor={colors.grey}
+                placeholderTextColor={colors.lightnavy}
                 leftIcon="lock"
                 placeholder="Password"
                 cursorColor={colors.navy}
@@ -106,10 +108,10 @@ export default function LoginScreen({ navigation }) {
             </TouchableOpacity>
             <TouchableOpacity
                 onPress={() => navigation.navigate("SignUp")}
-                style={styles.button}
-              ><Text style={styles.textColor}>Create Account</Text>
+                style={styles.buttonCreate}
+              ><Text style={styles.textColorCreate}>Don't have an account? Create Account</Text>
               </TouchableOpacity>
-          </BlurView>
+          </View>
         </View>
       </View>
     </KeyboardAvoidingView>
@@ -165,12 +167,24 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 10,
   },
+  buttonCreate: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 15,
+    backgroundColor: colors.grey,
+    marginTop: 10,
+  },
   loginRow: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     marginBottom: 20
   },
   textColor: {
+    color: colors.navy
+  },
+  textColorCreate: {
     color: colors.navy
   },
   title: {
@@ -186,7 +200,7 @@ const styles = StyleSheet.create({
       width: 3,
       height: 3
     },
-    color: colors.navy
+    color: colors.navy,
   },
   lgntitle: {
     fontSize: 50,
@@ -205,15 +219,14 @@ const styles = StyleSheet.create({
     color: colors.navy,
     textAlign: "right",
     fontWeight: "bold",
-    textDecorationLine: "underline",
     textAlign: 'center',
     marginRight: 10
   },
   lightInput: {
     flexDirection: "row",
     marginBottom: 10,
-    backgroundColor: colors.baige,
-    paddingLeft: 20,
+    backgroundColor: colors.lightBlue,
+    paddingLeft: 5,
     borderRadius: 15,
     shadowColor: "black",
     shadowOffset: {

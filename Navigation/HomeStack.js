@@ -3,7 +3,6 @@ import React from 'react';
 import HomeScreen  from '../Screens/HomeScreen';
 import ListScreen from '../Screens/ListScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import colors from '../colors';
 

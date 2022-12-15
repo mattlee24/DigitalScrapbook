@@ -4,6 +4,7 @@ export default {
     yellow: '#fcbf49',
     red: '#e63946',
     navy: '#023047',
+    lightnavy: 'rgba(2, 48, 71, 0.5)',
     white: '#ffffff',
     lightBlue: '#a2d2ff',
     orange: '#fb8500',

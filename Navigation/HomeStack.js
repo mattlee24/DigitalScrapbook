@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import HomeScreen  from '../Screens/HomeScreen';
 import ListScreen from '../Screens/ListScreen';
+import ProfileScreen from '../Screens/ProfileScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import colors from '../colors';
@@ -23,6 +24,8 @@ const HomeStack = () => {
                         iconName = focused ? "home" : "home-outline";
                     } else if (route.name === "List") {
                         iconName = focused ? "list" : "list-outline";
+                    } else if (route.name === "Profile") {
+                        iconName = focused ? "person" : "person-outline";
                     }   
                     return (
                         <Ionicons
@@ -37,6 +40,7 @@ const HomeStack = () => {
         >
             <Tab.Screen name="Home" component={HomeScreen} />
             <Tab.Screen name="List" component={ListScreen} />
+            <Tab.Screen name="Profile" component={ProfileScreen} />
         </Tab.Navigator>
     )
 }

@@ -11,13 +11,14 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, setDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { getStorage, ref, uploadBytes } from "firebase/storage"
 import colors from "../colors";
 import * as ImagePicker from "expo-image-picker";
+import Book from "../Components/BookCreate";
 
 export default function SignupScreen({ navigation }) {
 
@@ -25,7 +26,7 @@ export default function SignupScreen({ navigation }) {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [profilePic, setProfilePic] = useState("");
+  const [profilePic, setProfilePic] = useState(null);
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app)
@@ -41,12 +42,11 @@ export default function SignupScreen({ navigation }) {
     });
 
     if (!result.canceled) {
-            setProfilePic(result.assets[0].uri)
-            console.log(profilePic)
-            console.log("It works!");
-          } else {
-        Alert.alert("Image Error")
-      }
+      setProfilePic(result.assets[0].uri)
+      console.log("It works!");
+    } else {
+      Alert.alert("Image Error")
+    }
   };
 
   const onHandleSignup = async () => {
@@ -78,14 +78,14 @@ export default function SignupScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container1}  behavior={Platform.OS === "ios" ? "padding" : "height"}>
+    <KeyboardAvoidingView style={styles.container1} behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <Text style={styles.title}>Welcome to Your Digital Scrapbook</Text>
+      {/* <Book /> */}
       <View style={styles.container}>
         {/* <Image source={{ uri }} style={[styles.image, StyleSheet.absoluteFill]}/> */}
         <View style={styles.lightimage}>
           <Text style={styles.lgntitle}>Create Account</Text>
           <View style={styles.blur}>
-            <StatusBar style="dark-content" />
             <TouchableOpacity  onPress={onChooseImage}>
               <View style={styles.imagepicker}>
                 <Image
@@ -227,14 +227,18 @@ const styles = StyleSheet.create({
     width: (Platform.OS === 'ios') ? 150 : 120,
     height: (Platform.OS === 'ios') ? 150 : 120,
     borderRadius: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: "center",
-    marginBottom: 20,
     borderColor: colors.lightnavy,
-    borderWidth: 1
+    borderWidth: 1,
+    alignSelf: 'center',
   },
   imagepicker: {
+    width: (Platform.OS === 'ios') ? 150 : 120,
+    height: (Platform.OS === 'ios') ? 150 : 120,
+    borderRadius: 100,
+    alignSelf: "center",
+    justifyContent: 'center',
+    marginBottom: 10,
+    elevation: 5,
     shadowColor: "black",
     shadowOffset: {
       width: 0,
@@ -242,11 +246,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 5,
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    resizeMode: 'cover',
+    marginTop: -20
   },
   lightimage: {
     width: "100%",
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 15,
-    elevation: 3,
+    elevation: 5,
     shadowColor: "black",
     shadowOffset: {
       width: 0,
@@ -305,8 +305,8 @@ const styles = StyleSheet.create({
   },
   title: {
     padding: 1,
-    fontSize: 50,
-    paddingHorizontal: 15,
+    fontSize: 30,
+    paddingHorizontal: 5,
     fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
     width: "100%",
     marginTop: 50,

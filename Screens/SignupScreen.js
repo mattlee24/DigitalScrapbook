@@ -18,7 +18,6 @@ import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes } from "firebase/storage"
 import colors from "../colors";
 import * as ImagePicker from "expo-image-picker";
-import Book from "../Components/BookCreate";
 
 export default function SignupScreen({ navigation }) {
 
@@ -27,11 +26,18 @@ export default function SignupScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [profilePic, setProfilePic] = useState(null);
+  const [profilePicBlob, setProfilePicBlob] = useState(null);
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app)
   const db = getFirestore(app)
   const storage = getStorage(app);
+
+  // Create the file metadata
+  /** @type {any} */
+  const metadata = {
+    contentType: 'image/jpeg'
+  };
 
   const onChooseImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -43,6 +49,9 @@ export default function SignupScreen({ navigation }) {
 
     if (!result.canceled) {
       setProfilePic(result.assets[0].uri)
+      const response = await fetch(result.assets[0].uri);
+      const blob = await response.blob();
+      setProfilePicBlob(blob)
       console.log("It works!");
     } else {
       Alert.alert("Image Error")
@@ -51,10 +60,8 @@ export default function SignupScreen({ navigation }) {
 
   const onHandleSignup = async () => {
     if ( firstName != "" & lastName != "" & email != "" & password != ""){
-      const storageRef = ref(storage, email);
-      const img = await fetch(profilePic)
-      const imgbytes = await img.blob();
-      await uploadBytes(storageRef, imgbytes);
+      const storageRef = ref(storage, 'ProfilePictures/' + email);
+      uploadBytes(storageRef, profilePicBlob);
       createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) =>{
         const user = userCredential.user;

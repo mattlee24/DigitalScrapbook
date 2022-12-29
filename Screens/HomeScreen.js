@@ -1,21 +1,22 @@
-import { StyleSheet, Text, View, Pressable, Image, Button } from 'react-native'
-import React, {useState} from 'react'
+import { StyleSheet, Text, View, Pressable, Image, Button, TouchableOpacity, Alert } from 'react-native'
+import React, {useState, useEffect} from 'react'
 import colors from '../colors'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import MapView from 'react-native-map-clustering';
 import { Callout, Marker } from 'react-native-maps';
 import * as ImagePicker from 'expo-image-picker';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, setDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes } from "firebase/storage"
+import { getFirestore, doc, setDoc, collection, getDocs,query, where } from "firebase/firestore";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 const HomeScreen = ({}) => {
 
   const [image, setImage] = useState(null);
   const [longitude, setLongitude] = useState(null)
   const [latitude, setLatitude] = useState(null)
+  const [markerPicBlob, setMarkerPicBlob] = useState(null);
+  const [ markersList, setMarkersList ] = useState({})
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app)
@@ -23,7 +24,18 @@ const HomeScreen = ({}) => {
   const storage = getStorage(app);
   const currentUser = auth.currentUser
 
-  // console.log(currentUser.uid)
+  const q = query(collection(db, "markers"), where("userID", "==", currentUser.uid));
+
+  useEffect(() => {
+    async function getAllDocs(q) {
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        setMarkersList({...markersList, [doc.id] : [doc.data().latitude, doc.data().longitude]})
+        });
+    }
+    getAllDocs(q)
+    console.log(markersList)
+  }, []);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -35,25 +47,29 @@ const HomeScreen = ({}) => {
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri)
-      setLatitude(result.assets[0].exif.GPSLatitude)
-      setLongitude(result.assets[0].exif.GPSLongitude)
-      // console.log(result.assets[0].uri)
-      // console.log(result.assets[0].fileName)
-      const newDoc = doc(db, 'markers/'+result.assets[0].fileName)
-      const docData = {
-        userID: currentUser.uid,
-        longitude: result.assets[0].exif.GPSLongitude,
-        latitude: result.assets[0].exif.GPSLatitude,
+      if ( result.assets[0].exif.GPSLatitude ){
+        setImage(result.assets[0].uri)
+        setLatitude(result.assets[0].exif.GPSLatitude)
+        setLongitude(result.assets[0].exif.GPSLongitude)
+        const newDoc = doc(db, 'markers/'+result.assets[0].fileName)
+        const docData = {
+          userID: currentUser.uid,
+          longitude: result.assets[0].exif.GPSLongitude,
+          latitude: result.assets[0].exif.GPSLatitude,
+        }
+        setDoc(newDoc, docData)
+        const response = await fetch(result.assets[0].uri);
+        const blob = await response.blob();
+        await setMarkerPicBlob(blob)
+        if (markerPicBlob) {
+          const storageRef = ref(storage, 'MarkerPictures/' + result.assets[0].fileName);
+          uploadBytes(storageRef, blob);
+        } else {
+          Alert.alert("Unable to upload pic to storage")
+        }
+      } else {
+        Alert.alert("Image Error")
       }
-      setDoc(newDoc, docData)
-      const storageRef = ref(storage, 'MarkerPictures/' + email);
-      const img = await fetch(result.assets[0].uri);
-      const imgbytes = img.blob();
-      console.log(imgbytes._z)
-      uploadBytes(storageRef, imgbytes._z);
-      // console.log(result.assets[0].exif.GPSLatitude);
-      // console.log(result.assets[0].exif.GPSLongitude);
     } else {
       Alert.alert("Image Error")
     }
@@ -68,25 +84,37 @@ const HomeScreen = ({}) => {
 
   return (
     <View style={styles.container}>
-      <Button title="Add image, from camera roll, to add to scrapbook. (IMPORTANT make sure your location was on when you took the image otherwise it will NOT work!" onPress={pickImage} style={styles.imagePickerBtn}/>
+      <TouchableOpacity title={`Click here to add image, from camera roll, to scrapbook. \n\n IMPORTANT make sure your location was on when you took the image otherwise it will NOT work!`} />
+      <TouchableOpacity onPress={pickImage} style={styles.imagePickerBtn}>
+        <Text style={styles.imagePickerBtnText}>
+          Click here to add image, from camera roll, to scrapbook. {'\n'} {'\n'} IMPORTANT make sure your location was on when you took the image otherwise it will NOT work!
+        </Text>
+      </TouchableOpacity>
       <MapView 
         style={styles.map} 
         initialRegion={INITIAL_REGION} 
         mapType={"standard"}
       >
-        <Marker 
-          coordinate={{
-            latitude: latitude,
-            longitude: longitude,
-          }}
-          description={"This is a marker in React Natve"}
-        >
-          <Image source={{uri: image}} style={styles.markerImage} />
-          <Callout style={styles.callout}>{/* displays when the marker is pressed */}
-            <Pressable style={styles.calloutButton}>
-            </Pressable>
-          </Callout>
-        </Marker>
+        {Object.values(markersList).map(index => {
+          console.log(index[0])
+            return <Marker
+              key={index.id} 
+              coordinate={{
+                latitude :index[0],
+                longitude :index[1]
+              }} 
+              width={20}
+              height={20}
+              pinColor="#007A3B"                                     
+            >                                       
+              <Callout style={styles.callout}>
+                <Text style={styles.calloutTitle}>{index.title}</Text>
+                <Pressable style={styles.calloutButton}>
+                  <Text style={styles.calloutText}>Find More</Text>
+                </Pressable>
+              </Callout>
+            </Marker>
+          })}
       </MapView>
     </View>
   )
@@ -110,6 +138,18 @@ const styles = StyleSheet.create({
     borderRadius: 50
   },
   imagePickerBtn: {
-    
+    color: colors.black,
+    elevation: 5,
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+  },
+  imagePickerBtnText: {
+    textAlign: 'center',
+    margin: 10
   }
 })

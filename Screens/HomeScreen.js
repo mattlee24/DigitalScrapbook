@@ -23,7 +23,7 @@ const HomeScreen = ({ navigation }) => {
   const db = getFirestore(app)
   const currentUser = auth.currentUser
 
-  const q = query(collection(db, "markers"), where("userID", "==", currentUser.uid));
+  const q = query(collection(db, "Markers"), where("userID", "==", currentUser.uid));
 
   useEffect(() => {
     async function getAllDocs(q) {
@@ -104,7 +104,7 @@ const HomeScreen = ({ navigation }) => {
             }} 
             pinColor={colors.navy}
             onCalloutPress={() => {
-              CreateScrapbook(index[0], index[1], index[2])
+              CreateScrapbook(index[0], index[1], index[2], currentUser.uid)
               navigation.push("ScrapbookScreen", {latitude: index[0], longitude: index[1], image: index[2]})}
             }
           >      

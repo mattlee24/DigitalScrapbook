@@ -6,6 +6,8 @@ import ProfileScreen from '../Screens/ProfileScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import colors from '../colors';
+import HomeScreenStack from './HomeScreenStack';
+import ListScreenStack from './ListScreenStack'
 
 const HomeStack = () => {
 
@@ -38,8 +40,8 @@ const HomeStack = () => {
                 }
             })}
         >
-            <Tab.Screen name="Home" component={HomeScreen} />
-            <Tab.Screen name="List" component={ListScreen} />
+            <Tab.Screen name="Home" component={HomeScreenStack} />
+            <Tab.Screen name="List" component={ListScreenStack} />
             <Tab.Screen name="Profile" component={ProfileScreen} />
         </Tab.Navigator>
     )

@@ -7,7 +7,7 @@ import {
   Alert,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Image
+  Image,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
@@ -18,6 +18,8 @@ import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes } from "firebase/storage"
 import colors from "../colors";
 import * as ImagePicker from "expo-image-picker";
+import CreateAccountLoading from "../Components/CreateAccountLoading";
+
 
 export default function SignupScreen({ navigation }) {
 
@@ -27,17 +29,12 @@ export default function SignupScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [profilePic, setProfilePic] = useState(null);
   const [profilePicBlob, setProfilePicBlob] = useState(null);
+  const [ isLoading, setIsLoading ] = useState(false)
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app)
   const db = getFirestore(app)
   const storage = getStorage(app);
-
-  // Create the file metadata
-  /** @type {any} */
-  const metadata = {
-    contentType: 'image/jpeg'
-  };
 
   const onChooseImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -52,7 +49,6 @@ export default function SignupScreen({ navigation }) {
       const response = await fetch(result.assets[0].uri);
       const blob = await response.blob();
       setProfilePicBlob(blob)
-      console.log("It works!");
     } else {
       Alert.alert("Image Error")
     }
@@ -60,12 +56,11 @@ export default function SignupScreen({ navigation }) {
 
   const onHandleSignup = async () => {
     if ( firstName != "" & lastName != "" & email != "" & password != ""){
-      const storageRef = ref(storage, 'ProfilePictures/' + email);
-      uploadBytes(storageRef, profilePicBlob);
       createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) =>{
+      .then(async (userCredential) =>{
+        setIsLoading(true)
         const user = userCredential.user;
-        const newDoc = doc(db, 'users/'+user.uid)
+        const newDoc = doc(db, 'Users/'+user.uid)
         const docData = {
           firstName: firstName,
           lastName: lastName,
@@ -73,6 +68,10 @@ export default function SignupScreen({ navigation }) {
           password: password,
         }
         setDoc(newDoc, docData)
+        const storageRef = ref(storage, 'ProfilePictures/' + email);
+        await uploadBytes(storageRef, profilePicBlob).then(() => {
+          setIsLoading(false)
+        })
         Alert.alert('New user created with the email: ', user.email)
         navigation.navigate("Login")
       }) 
@@ -84,138 +83,144 @@ export default function SignupScreen({ navigation }) {
     }
   };
 
-  return (
-    <KeyboardAvoidingView style={styles.container1} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-      <Text style={styles.title}>Welcome to Your Digital Scrapbook</Text>
-      {/* <Book /> */}
-      <View style={styles.container}>
-        {/* <Image source={{ uri }} style={[styles.image, StyleSheet.absoluteFill]}/> */}
-        <View style={styles.lightimage}>
-          <Text style={styles.lgntitle}>Create Account</Text>
-          <View style={styles.blur}>
-            <TouchableOpacity  onPress={onChooseImage}>
-              <View style={styles.imagepicker}>
-                <Image
-                  source={{ uri: profilePic }}
-                  style={styles.imageProfilePic}
+  if (isLoading){
+    return(
+      <CreateAccountLoading />
+    )
+  } else {
+    return (
+      <KeyboardAvoidingView style={styles.container1} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        <Text style={styles.title}>Welcome to Your Digital Scrapbook</Text>
+        {/* <Book /> */}
+        <View style={styles.container}>
+          {/* <Image source={{ uri }} style={[styles.image, StyleSheet.absoluteFill]}/> */}
+          <View style={styles.lightimage}>
+            <Text style={styles.lgntitle}>Create Account</Text>
+            <View style={styles.blur}>
+              <TouchableOpacity  onPress={onChooseImage}>
+                <View style={styles.imagepicker}>
+                  <Image
+                    source={{ uri: profilePic }}
+                    style={styles.imageProfilePic}
+                  />
+                  { <MaterialCommunityIcons
+                    name="camera"
+                    size={35}
+                    color="#fff"
+                    style={{
+                      opacity: 0.5,
+                      alignSelf: "center",
+                      position: "absolute",
+                      marginTop: 40
+                    }}
+                    /> }
+                </View>
+              </TouchableOpacity>
+              <View style={styles.lightInput}>
+                <MaterialCommunityIcons
+                  style={styles.iconstyle}
+                  name="account"
+                  size={20}
+                  color={colors.navy}
                 />
-                { <MaterialCommunityIcons
-                  name="camera"
-                  size={35}
-                  color="#fff"
-                  style={{
-                    opacity: 0.5,
-                    alignSelf: "center",
-                    position: "absolute",
-                    marginTop: 40
+                <TextInput
+                  inputStyle={{
+                    fontSize: 14,
                   }}
-                  /> }
+                  color={colors.navy}
+                  placeholderTextColor={colors.lightnavy}
+                  placeholder="First Name"
+                  cursorColor={colors.navy}
+                  autoCapitalize="none"
+                  keyboardType="default"
+                  textContentType="givenName"
+                  value={firstName}
+                  onChangeText={(text) => setFirstName(text)}
+                />
               </View>
-            </TouchableOpacity>
-            <View style={styles.lightInput}>
-              <MaterialCommunityIcons
-                style={styles.iconstyle}
-                name="account"
-                size={20}
-                color={colors.navy}
-              />
-              <TextInput
-                inputStyle={{
-                  fontSize: 14,
-                }}
-                color={colors.navy}
-                placeholderTextColor={colors.lightnavy}
-                placeholder="First Name"
-                cursorColor={colors.navy}
-                autoCapitalize="none"
-                keyboardType="default"
-                textContentType="givenName"
-                value={firstName}
-                onChangeText={(text) => setFirstName(text)}
-              />
+              <View style={styles.lightInput}>
+                <MaterialCommunityIcons
+                  style={styles.iconstyle}
+                  name="account"
+                  size={20}
+                  color={colors.navy}
+                />
+                <TextInput
+                  inputStyle={{
+                    fontSize: 14,
+                  }}
+                  color={colors.navy}
+                  placeholderTextColor={colors.lightnavy}
+                  placeholder="Last Name"
+                  cursorColor={colors.navy}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  textContentType="familyName"
+                  value={lastName}
+                  onChangeText={(text) => setLastName(text)}
+                />
+              </View>
+              <View style={styles.lightInput}>
+                <MaterialCommunityIcons
+                  style={styles.iconstyle}
+                  name="email"
+                  size={20}
+                  color={colors.navy}
+                />
+                <TextInput
+                  inputStyle={{
+                    fontSize: 14,
+                  }}
+                  color={colors.navy}
+                  placeholderTextColor={colors.lightnavy}
+                  placeholder="Email"
+                  cursorColor={colors.navy}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                  textContentType="emailAddress"
+                  value={email}
+                  onChangeText={(text) => setEmail(text)}
+                />
+              </View>
+              <View style={styles.lightInput}>
+                <MaterialCommunityIcons
+                  style={styles.iconstyle}
+                  name="lock"
+                  size={20}
+                  color={colors.navy}
+                />
+                <TextInput
+                  inputStyle={{
+                    fontSize: 14,
+                  }}
+                  color={colors.navy}
+                  placeholderTextColor={colors.lightnavy}
+                  placeholder="Password"
+                  cursorColor={colors.navy}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  secureTextEntry={true}
+                  textContentType="password"
+                  value={password}
+                  onChangeText={(text) => setPassword(text)}
+                />
+              </View>
+              <TouchableOpacity
+                onPress={onHandleSignup}
+                style={styles.button}
+              ><Text style={styles.textColor}>Create Account</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Login")}
+                style={styles.buttonLogin}
+              ><Text style={styles.textColorLogin}>Already have an account? Login</Text>
+              </TouchableOpacity>
             </View>
-            <View style={styles.lightInput}>
-              <MaterialCommunityIcons
-                style={styles.iconstyle}
-                name="account"
-                size={20}
-                color={colors.navy}
-              />
-              <TextInput
-                inputStyle={{
-                  fontSize: 14,
-                }}
-                color={colors.navy}
-                placeholderTextColor={colors.lightnavy}
-                placeholder="Last Name"
-                cursorColor={colors.navy}
-                autoCapitalize="none"
-                autoCorrect={false}
-                textContentType="familyName"
-                value={lastName}
-                onChangeText={(text) => setLastName(text)}
-              />
-            </View>
-            <View style={styles.lightInput}>
-              <MaterialCommunityIcons
-                style={styles.iconstyle}
-                name="email"
-                size={20}
-                color={colors.navy}
-              />
-              <TextInput
-                inputStyle={{
-                  fontSize: 14,
-                }}
-                color={colors.navy}
-                placeholderTextColor={colors.lightnavy}
-                placeholder="Email"
-                cursorColor={colors.navy}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                textContentType="emailAddress"
-                value={email}
-                onChangeText={(text) => setEmail(text)}
-              />
-            </View>
-            <View style={styles.lightInput}>
-              <MaterialCommunityIcons
-                style={styles.iconstyle}
-                name="lock"
-                size={20}
-                color={colors.navy}
-              />
-              <TextInput
-                inputStyle={{
-                  fontSize: 14,
-                }}
-                color={colors.navy}
-                placeholderTextColor={colors.lightnavy}
-                placeholder="Password"
-                cursorColor={colors.navy}
-                autoCapitalize="none"
-                autoCorrect={false}
-                secureTextEntry={true}
-                textContentType="password"
-                value={password}
-                onChangeText={(text) => setPassword(text)}
-              />
-            </View>
-            <TouchableOpacity
-              onPress={onHandleSignup}
-              style={styles.button}
-            ><Text style={styles.textColor}>Create Account</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Login")}
-              style={styles.buttonLogin}
-            ><Text style={styles.textColorLogin}>Already have an account? Login</Text>
-            </TouchableOpacity>
           </View>
         </View>
-      </View>
-    </KeyboardAvoidingView>
-  );
+      </KeyboardAvoidingView>
+    );
+  }
 }
 
 

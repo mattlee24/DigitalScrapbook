@@ -10,11 +10,11 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 import HomeStack from "../Navigation/HomeStack";
-import { BlurView } from 'expo-blur';
 import colors from "../colors";
 import Book from "../Components/Book";
 
@@ -25,12 +25,15 @@ export default function LoginScreen({ navigation }) {
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app)
+  const db = getFirestore(app)
 
   const onLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      Alert.alert('Logged in with the email: ', user.email)
+    .then(async () => {
+      const currentUser = auth.currentUser
+      const docRef = doc(db, "users", currentUser.uid);
+      const userData = await getDoc(docRef)
+      Alert.alert("Remember," + " " + userData.data().firstName + ", any images uploaded throughout the app will ONLY work on the device they were uploaded from. Exept profile pictures.")
       navigation.navigate(HomeStack)
     })
     .catch(error => {

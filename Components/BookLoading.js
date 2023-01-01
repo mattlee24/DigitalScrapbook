@@ -8,8 +8,8 @@ const Book = () => {
     <MaterialCommunityIcons
         style={styles.bookstyle}
         name="book-open-variant"
-        size={100}
-        color={colors.navy}
+        size={350}
+        color={colors.grey}
     />
   )
 }
@@ -18,7 +18,9 @@ export default Book
 
 const styles = StyleSheet.create({
     bookstyle: { 
-        textAlign: 'center',
         flex: 1,
+        position: 'absolute',
+        zIndex: -1,
+        margin: 'auto'
     },
 })

@@ -144,7 +144,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     margin: 2,
     fontSize: 15,
-    color: colors.red
+    color: colors.red,
+    marginBottom: 10
   }, 
   markerImage: {
     width: 35,

@@ -1,5 +1,5 @@
 import { Alert, Button, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import colors from '../colors'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { getAuth } from 'firebase/auth';
@@ -15,9 +15,21 @@ const ScrapbokScreen = ({ route, navigation }) => {
   const db = getFirestore(app)
   const currentUser = auth.currentUser
 
+  const [ currentTitle, setCurrenttitle ] = useState("");
+
   const [title, setTitle] = useState("");
+  const [longitude, setLongitude] = useState("");
+  const [latitude, setLatitude] = useState("");
 
   const docRef = doc(db, "Users/" + currentUser.uid +"/Scrapbooks", route.params.id);
+
+  useEffect(() => {
+    const getCurrentTitle = async () => {
+      const ScrabookTitle = await getDoc(docRef);
+      setCurrenttitle(ScrabookTitle.id)
+    }
+    getCurrentTitle()
+  }, [])
 
   const updateScrapbook = async () => {
     if (title != "") {
@@ -38,15 +50,24 @@ const ScrapbokScreen = ({ route, navigation }) => {
         image: ScrapbookData.data().image
       })
     } else {
-      Alert.alert("No name has been set for the scrapbook")
+      Alert.alert(
+        "!Error!",
+        "No name given to update",
+        [
+          { 
+            text: "OK", 
+            style: "destructive"
+          }
+        ]
+      );
     }
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.ScrollViewcontainer}>
+      <ScrollView style={styles.ScrollViewcontainer} showsVerticalScrollIndicator={false}>
         <View style={styles.formContainer}>
-          <Text style={styles.lgntitle}>Name Scrapbook:</Text>
+          <Text style={styles.lgntitle}>Change Scrapbook Name:</Text>
           <View style={styles.blur}>
             <View style={styles.titleInput}>
               <TextInput
@@ -54,13 +75,9 @@ const ScrapbokScreen = ({ route, navigation }) => {
                   fontSize: 14,
                 }}
                 color={colors.navy}
-                leftIcon="email"
                 placeholderTextColor={colors.lightnavy}
-                placeholder="Scrabook Name"
-                cursorColor={colors.navy}
+                placeholder={currentTitle}
                 autoCapitalize="none"
-                keyboardType="email-address"
-                textContentType="emailAddress"
                 value={title}
                 onChangeText={(text) => {
                   setTitle(text)
@@ -71,10 +88,63 @@ const ScrapbokScreen = ({ route, navigation }) => {
               onPress={updateScrapbook}
               style={styles.button}
             >
-              <Text style={styles.textColor}>Update Scrapbook</Text>
+              <Text style={styles.textColor}>Update Scrapbook Name</Text>
             </TouchableOpacity>
           </View>
         </View>
+        <View style={styles.formContainer}>
+          <Text style={styles.lgntitle}>Change Scrapbook Coordinates:</Text>
+          <View style={styles.blur}>
+            <View style={styles.titleInput}>
+              <TextInput
+                inputStyle={{
+                  fontSize: 14,
+                }}
+                color={colors.navy}
+                placeholderTextColor={colors.lightnavy}
+                placeholder="Longitude"
+                autoCapitalize="none"
+                value={title}
+                onChangeText={(text) => {
+                  setLongitude(text)
+                }}
+              />
+            </View>
+            <View style={styles.titleInput}>
+              <TextInput
+                inputStyle={{
+                  fontSize: 14,
+                }}
+                color={colors.navy}
+                placeholderTextColor={colors.lightnavy}
+                placeholder="Latitude"
+                autoCapitalize="none"
+                value={title}
+                onChangeText={(text) => {
+                  setLatitude(text)
+                }}
+              />
+            </View>
+            <TouchableOpacity
+              onPress={updateScrapbook}
+              style={styles.button}
+            >
+              <Text style={styles.textColor}>Update Scrapbook Coordinates</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <TouchableOpacity style={styles.buttonView}>
+            <Text style={styles.AddText}>Add Text Section</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonView}>
+            <Text style={styles.AddText}>Add Hand Written Note</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonView}>
+            <Text style={styles.AddText}>Add More Images</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonView} onPress={() => {navigation.goBack()}}>
+            <Text style={styles.AddText}>Go Back</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   )
@@ -90,17 +160,19 @@ const styles = StyleSheet.create({
   },
   ScrollViewcontainer: {
     width: "100%",
+    marginBottom: 45,
   },
   formContainer: {
     width: "95%",
     backgroundColor: colors.grey,
-    borderRadius: 50,
+    borderRadius: 25,
     paddingVertical: 10,
     borderWidth: 1,
     borderColor: colors.navy,
     borderRightWidth: 5,
     borderBottomWidth: 5,
     alignSelf: 'center',
+    marginTop: 10
   },
   blur: {
     marginVertical: 5,
@@ -126,7 +198,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.navy,
     borderRightWidth: 5,
-    borderBottomWidth: 5
+    borderBottomWidth: 5,
   },
   button: {
     alignItems: 'center',
@@ -135,10 +207,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 15,
     backgroundColor: colors.grey,
-    marginTop: 10,
     borderWidth: 1,
     borderColor: colors.navy,
     borderRightWidth: 5,
     borderBottomWidth: 5,
+  },
+  buttonView: {
+    width: "95%",
+    backgroundColor: colors.grey,
+    borderRadius: 50,
+    paddingVertical: 15,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    borderWidth: 1,
+    borderColor: colors.navy,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    marginTop: 10,
+  },
+  AddText: {
+    fontSize: 30,
+    marginLeft: 10,
+    fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
+    width: "100%",
+    textAlign: "center",
+    color: colors.navy
   },
 })

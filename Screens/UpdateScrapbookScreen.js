@@ -143,7 +143,10 @@ const ScrapbokScreen = ({ route, navigation }) => {
             <Text style={styles.AddText}>Add More Images</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonView} onPress={() => {navigation.goBack()}}>
-            <Text style={styles.AddText}>Go Back</Text>
+            <Text style={styles.DeleteText}>Delete Scrapbook</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonView} onPress={() => {navigation.goBack()}}>
+            <Text style={styles.GoBackText}>Go Back</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -160,7 +163,7 @@ const styles = StyleSheet.create({
   },
   ScrollViewcontainer: {
     width: "100%",
-    marginBottom: 45,
+    marginBottom: 48,
   },
   formContainer: {
     width: "95%",
@@ -232,5 +235,21 @@ const styles = StyleSheet.create({
     width: "100%",
     textAlign: "center",
     color: colors.navy
+  },
+  GoBackText: {
+    fontSize: 30,
+    marginLeft: 10,
+    fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
+    width: "100%",
+    textAlign: "center",
+    color: colors.green
+  },
+  DeleteText: {
+    fontSize: 30,
+    marginLeft: 10,
+    fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
+    width: "100%",
+    textAlign: "center",
+    color: colors.red
   },
 })

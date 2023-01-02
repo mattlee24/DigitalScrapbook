@@ -9,7 +9,7 @@ const db = getFirestore(app)
 const genRanHex = size => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 
 const CreateScrapbook = async (latitude, longitude, image, userID) => {
-  const docRef = query(collection(db, "Scrapbooks"), where("image", "==", image));
+  const docRef = query(collection(db, 'Users/' + userID + '/Scrapbooks'), where("image", "==", image));
   const querySnapshot = await getDocs(docRef)
   if (querySnapshot.size > 0){
     querySnapshot.forEach((item) => {

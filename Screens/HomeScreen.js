@@ -23,7 +23,7 @@ const HomeScreen = ({ navigation }) => {
   const db = getFirestore(app)
   const currentUser = auth.currentUser
 
-  const q = query(collection(db, "Markers"), where("userID", "==", currentUser.uid));
+  const q = query(collection(db, "Users/" + currentUser.uid + "/Markers"), where("userID", "==", currentUser.uid));
 
   useEffect(() => {
     async function getAllDocs(q) {
@@ -61,7 +61,7 @@ const HomeScreen = ({ navigation }) => {
 
     if (!result.canceled) {
       if ( result.assets[0].exif.GPSLatitude ){
-        const newMarker = doc(db, 'Markers/'+result.assets[0].fileName)
+        const newMarker = doc(db, 'Users/' + currentUser.uid + '/Markers/'+result.assets[0].fileName)
         const markerData = {
           userID: currentUser.uid,
           longitude: result.assets[0].exif.GPSLongitude,

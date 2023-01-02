@@ -107,13 +107,15 @@ export default function LoginScreen({ navigation }) {
             <TouchableOpacity
               onPress={onLogin}
               style={styles.button}
-            ><Text style={styles.textColor}>Login</Text>
+            >
+              <Text style={styles.textColor}>Login</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 onPress={() => navigation.navigate("SignUp")}
                 style={styles.buttonCreate}
-              ><Text style={styles.textColorCreate}>Don't have an account? Create Account</Text>
-              </TouchableOpacity>
+            >
+              <Text style={styles.textColorCreate}>Don't have an account? Create Account</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

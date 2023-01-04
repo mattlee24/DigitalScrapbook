@@ -6,7 +6,7 @@ import { getAuth } from 'firebase/auth';
 import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
 import { TextInput } from "react-native-gesture-handler";
-import { doc, getDoc, getFirestore, setDoc, deleteDoc } from "firebase/firestore";
+import { doc, getDoc, getFirestore, setDoc, deleteDoc, collection, getDocs, query, where } from "firebase/firestore";
 
 const ScrapbokScreen = ({ route, navigation }) => {
 
@@ -16,24 +16,31 @@ const ScrapbokScreen = ({ route, navigation }) => {
   const currentUser = auth.currentUser
 
   const [ currentTitle, setCurrenttitle ] = useState("");
+  const [ markerToChange, setMarkerToChange ] = useState("");
 
   const [title, setTitle] = useState("");
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
 
-  const docRef = doc(db, "Users/" + currentUser.uid +"/Scrapbooks", route.params.id);
+  const scrapbookRef = doc(db, "Users/" + currentUser.uid +"/Scrapbooks", route.params.id);
+
+  const markerRef = query(collection(db, "Users/"+currentUser.uid+"/Markers"), where("image", "==", route.params.image));
 
   useEffect(() => {
     const getCurrentTitle = async () => {
-      const ScrabookTitle = await getDoc(docRef);
+      const ScrabookTitle = await getDoc(scrapbookRef);
       setCurrenttitle(ScrabookTitle.id)
+      const markerRef = await getDocs(collection(db, "Users/" + currentUser.uid +"/Markers"));
+      markerRef.forEach((marker) => {
+        setMarkerToChange(marker.id)
+      })
     }
     getCurrentTitle()
   }, [])
 
-  const updateScrapbook = async () => {
+  const updateScrapbookName = async () => {
     if (title != "") {
-      const ScrapbookData = await getDoc(docRef)
+      const ScrapbookData = await getDoc(scrapbookRef)
       const newScrapbook = doc(db, "Users/" + currentUser.uid +"/Scrapbooks/" + title)
       const scrapbookData = {
         userID: ScrapbookData.data().userID,
@@ -42,7 +49,7 @@ const ScrapbokScreen = ({ route, navigation }) => {
         image: ScrapbookData.data().image
       }
       setDoc(newScrapbook, scrapbookData)
-      await deleteDoc(docRef)
+      await deleteDoc(scrapbookRef)
       Alert.alert("Scrapbook Updated")
       navigation.push("ScrapbookScreen", {
         latitude: ScrapbookData.data().latitude, 
@@ -50,17 +57,43 @@ const ScrapbokScreen = ({ route, navigation }) => {
         image: ScrapbookData.data().image
       })
     } else {
-      Alert.alert(
-        "!Error!",
-        "No name given to update",
-        [
-          { 
-            text: "OK", 
-            style: "destructive"
-          }
-        ]
-      );
+      Alert.alert("No name given to update");
     }
+  }
+
+  const updateCoordinates = async () => {
+    if (latitude != "" && longitude != "") {
+      const ScrapbookData = await getDoc(scrapbookRef)
+      const newScrapbook = doc(db, "Users/" + currentUser.uid +"/Scrapbooks/" + ScrapbookData.id)
+      const scrapbookData = {
+        userID: ScrapbookData.data().userID,
+        longitude: longitude,
+        latitude: latitude,
+        image: ScrapbookData.data().image
+      }
+      setDoc(newScrapbook, scrapbookData)
+      const markerUpdate = doc(db, "Users/" + currentUser.uid +"/Markers/" + markerToChange)
+      await setDoc(markerUpdate, {
+        image: ScrapbookData.data().image,
+        longitude: longitude,
+        latitude: latitude,
+        userID: currentUser.uid,
+      });
+      Alert.alert("Scrapbook and Marker Updated")
+      navigation.push("HomeScreen")
+    } else {
+      Alert.alert("All coordinates must be given");
+    }
+  }
+
+  const deleteScrapbookandMarker = async () => {
+    await deleteDoc(doc(db, "Users/" + currentUser.uid +"/Scrapbooks", route.params.id));
+    const markersRef = await getDocs(markerRef)
+    markersRef.forEach(async(marker) => {
+      await deleteDoc(doc(db, "Users/" + currentUser.uid +"/Markers", marker.id))
+    })
+    Alert.alert("Scrapbook and Marker Deleted")
+    navigation.push("HomeScreen", {refresh: true})
   }
 
   return (
@@ -85,7 +118,7 @@ const ScrapbokScreen = ({ route, navigation }) => {
               />
             </View>
             <TouchableOpacity
-              onPress={updateScrapbook}
+              onPress={updateScrapbookName}
               style={styles.button}
             >
               <Text style={styles.textColor}>Update Scrapbook Name</Text>
@@ -103,8 +136,9 @@ const ScrapbokScreen = ({ route, navigation }) => {
                 color={colors.navy}
                 placeholderTextColor={colors.lightnavy}
                 placeholder="Longitude"
+                keyboardType="numbers-and-punctuation"
                 autoCapitalize="none"
-                value={title}
+                value={longitude}
                 onChangeText={(text) => {
                   setLongitude(text)
                 }}
@@ -118,22 +152,26 @@ const ScrapbokScreen = ({ route, navigation }) => {
                 color={colors.navy}
                 placeholderTextColor={colors.lightnavy}
                 placeholder="Latitude"
+                keyboardType="numbers-and-punctuation"
                 autoCapitalize="none"
-                value={title}
+                value={latitude}
                 onChangeText={(text) => {
                   setLatitude(text)
                 }}
               />
             </View>
             <TouchableOpacity
-              onPress={updateScrapbook}
+              onPress={updateCoordinates}
               style={styles.button}
             >
               <Text style={styles.textColor}>Update Scrapbook Coordinates</Text>
             </TouchableOpacity>
           </View>
         </View>
-        <TouchableOpacity style={styles.buttonView}>
+        <TouchableOpacity style={styles.buttonView} onPress={() => {
+            navigation.push("AddTextSectionScreen", {id: route.params.id})
+          }}
+          >
             <Text style={styles.AddText}>Add Text Section</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonView}>
@@ -142,8 +180,12 @@ const ScrapbokScreen = ({ route, navigation }) => {
         <TouchableOpacity style={styles.buttonView}>
             <Text style={styles.AddText}>Add More Images</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonView} onPress={() => {navigation.goBack()}}>
-            <Text style={styles.DeleteText}>Delete Scrapbook</Text>
+        <TouchableOpacity style={styles.buttonView} 
+          onPress={async() => {
+            deleteScrapbookandMarker()
+          }}
+        >
+          <Text style={styles.DeleteText}>Delete Scrapbook and Corrosponding Marker</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonView} onPress={() => {navigation.goBack()}}>
             <Text style={styles.GoBackText}>Go Back</Text>
@@ -160,10 +202,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.baige,
     alignItems: 'center',
+    marginLeft: 2,
   },
   ScrollViewcontainer: {
     width: "100%",
-    marginBottom: 48,
+    marginBottom: 80,
   },
   formContainer: {
     width: "95%",
@@ -190,6 +233,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: colors.navy,
     marginBottom: 5,
+    letterSpacing: 1
   },
   titleInput: {
     flexDirection: "row",
@@ -230,26 +274,26 @@ const styles = StyleSheet.create({
   },
   AddText: {
     fontSize: 30,
-    marginLeft: 10,
     fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
     width: "100%",
     textAlign: "center",
-    color: colors.navy
+    color: colors.navy,
+    letterSpacing: 1
   },
   GoBackText: {
     fontSize: 30,
-    marginLeft: 10,
     fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
     width: "100%",
     textAlign: "center",
-    color: colors.green
+    color: colors.green,
+    letterSpacing: 1
   },
   DeleteText: {
     fontSize: 30,
-    marginLeft: 10,
     fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
     width: "100%",
     textAlign: "center",
-    color: colors.red
+    color: colors.red,
+    letterSpacing: 1
   },
 })

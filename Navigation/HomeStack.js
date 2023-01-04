@@ -1,13 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import HomeScreen  from '../Screens/HomeScreen';
-import ListScreen from '../Screens/ListScreen';
+import InformationScreen from '../Screens/InformationScreen';
 import ProfileScreen from '../Screens/ProfileScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import colors from '../colors';
 import HomeScreenStack from './HomeScreenStack';
-import ListScreenStack from './ListScreenStack'
+import ListScreenStack from './ListScreenStack';
 
 const HomeStack = () => {
 
@@ -28,12 +27,14 @@ const HomeStack = () => {
                         iconName = focused ? "list" : "list-outline";
                     } else if (route.name === "Profile") {
                         iconName = focused ? "person" : "person-outline";
-                    }   
+                    } else if (route.name === "info") {
+                        iconName = focused ? "information-circle" : "information-circle-outline";
+                    }     
                     return (
                         <Ionicons
                             name={iconName}
                             size={30}
-                            color={focused? colors.black : colors.lightBlack}
+                            color={focused? colors.navy : colors.lightnavy}
                             opacity={0.5}
                         />
                     );
@@ -43,6 +44,7 @@ const HomeStack = () => {
             <Tab.Screen name="Home" component={HomeScreenStack} />
             <Tab.Screen name="List" component={ListScreenStack} />
             <Tab.Screen name="Profile" component={ProfileScreen} />
+            <Tab.Screen name="info" component={InformationScreen} />
         </Tab.Navigator>
     )
 }
@@ -57,8 +59,16 @@ const styles = StyleSheet.create({
         backgroundColor: colors.grey,
         position: "absolute",
         borderTopWidth: 1,
-        borderTopColor: colors.black,
+        borderTopColor: colors.navy,
         height: 80,
         paddingBottom: 0,
+        marginBottom: 20,
+        marginHorizontal: 10,
+        borderRadius: 50,
+        borderWidth: 1,
+        borderColor: colors.navy,
+        borderRightWidth: 5,
+        borderBottomWidth: 5,
+        zIndex: 0,
     }
 });

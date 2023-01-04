@@ -10,8 +10,15 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, setDoc, collection, getDocs, query, where } from "firebase/firestore";
 import INITIAL_REGION from '../Components/InitialRegion'
 import CreateScrapbook from '../Components/CreateScrapbook';
+import { Ionicons } from '@expo/vector-icons';
+import { useFonts } from 'expo-font';
+import Loading from '../Components/Loading';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ route, navigation }) => {
+
+  const [fontsLoaded] = useFonts({
+    'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
+  });
 
   const [ markersList, setMarkersList ] = useState({})  
   const [ refresh, setRefresh ] = useState(false)
@@ -50,6 +57,22 @@ const HomeScreen = ({ navigation }) => {
     getAllDocs(q)
   }
 
+  try {
+    if (route.params.refresh) {
+      const getAllDocs = async (q) => {
+        const querySnapshot = await getDocs(q);
+        const markersListUpdate = {}
+        querySnapshot.forEach((doc) => {
+          markersListUpdate[doc.id] = [doc.data().latitude, doc.data().longitude, doc.data().image]
+        });
+        setMarkersList(markersListUpdate)
+      }
+      getAllDocs(q)
+    }
+  } catch {
+    console.log("Running Correctly")
+  }
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -78,48 +101,55 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={pickImage} style={styles.imagePickerBtn}>
-        <Text style={styles.Text}>
-          Click here to add image, from camera roll, to scrapbook.
-        </Text>
-        <Text style={styles.TextImportant}>
-          IMPORTANT make sure your location was on when you took the image, otherwise it will NOT work!
-        </Text>
-      </TouchableOpacity>
-      <MapView 
-        style={styles.map} 
-        initialRegion={INITIAL_REGION} 
-        mapType={"standard"}
-        clusterColor={colors.navy}
-      >
-        {Object.values(markersList).map(index => {
-          i = i+1
-            return <Marker
-            key={i} 
-            coordinate={{
-              longitude: index[1],
-              latitude: index[0]
-            }} 
-            pinColor={colors.navy}
-            onCalloutPress={() => {
-              CreateScrapbook(index[0], index[1], index[2], currentUser.uid)
-              navigation.push("ScrapbookScreen", {latitude: index[0], longitude: index[1], image: index[2]})}
-            }
-          >      
-            <Image source={{ uri: index[2] }} style={styles.markerImage} />                                 
-            <Callout style={styles.callout}>
-              <Text style={styles.calloutTitle}>Click to Create, View or Edit Scrapbook</Text>
-              <TouchableOpacity style={styles.calloutButton}>
-                <Text style={styles.calloutTextImportant}>Create/Edit/View Scrapbook</Text>
-              </TouchableOpacity>
-            </Callout>
-          </Marker>
-          })}
-      </MapView>
-    </View>
-  )
+  if (fontsLoaded) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.imagePickerView}>
+          <Text style={styles.TextImportant}>
+            IMPORTANT: Make sure your location was on when you took the image, otherwise it will NOT work!
+          </Text>
+        </View>
+        <View style={styles.buttonaddView}>
+          <TouchableOpacity style={styles.buttonadd}>
+            <Ionicons name={"add-circle"} size={100} color={colors.grey} onPress={pickImage}/>
+          </TouchableOpacity>
+        </View>
+        <MapView 
+          style={styles.map} 
+          initialRegion={INITIAL_REGION} 
+          mapType={"standard"}
+          clusterColor={colors.navy}
+        >
+          {Object.values(markersList).map(index => {
+            i = i+1
+              return <Marker
+              style={styles.marker}
+              key={i} 
+              coordinate={{
+                longitude: index[1],
+                latitude: index[0]
+              }} 
+              pinColor={colors.navy}
+              onCalloutPress={() => {
+                CreateScrapbook(index[0], index[1], index[2], currentUser.uid)
+                navigation.push("ScrapbookScreen", {image: index[2]})}
+              }
+            >      
+              <Image source={{ uri: index[2] }} style={styles.markerImage} />                                 
+              <Callout style={styles.callout}>
+                <Text style={styles.calloutTitle}>Click to Create, View or Edit Scrapbook</Text>
+                <TouchableOpacity style={styles.calloutButton}>
+                  <Text style={styles.calloutTextImportant}>Create/Edit/View Scrapbook</Text>
+                </TouchableOpacity>
+              </Callout>
+            </Marker>
+            })}
+        </MapView>
+      </View>
+    )
+  } else {
+    <Loading />
+  }
 }
 
 export default HomeScreen
@@ -127,41 +157,57 @@ export default HomeScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50,
-    backgroundColor: colors.grey,
   },
   map: {
     width: '100%',
     height: '100%',
   },
-  Text: {
-    textAlign: "center",
-    margin: 2,
-    fontSize: 20,
-    color: colors.navy
+  buttonaddView: {
+    position: 'absolute',
+    width: 'auto',
+    height: 'auto',
+    zIndex: 1,
+    alignSelf: 'center',
+    marginTop: 125,
+    borderWidth: 12,
+    borderRadius: 100,
+    borderColor: colors.navy,
+    backgroundColor: colors.navy
+  },
+  buttonadd: {
+    zIndex: 1,
+    elevation: 3,
+    margin: -20,
+    marginLeft: -14,
+    alignSelf: 'center',
   },
   TextImportant: {
     textAlign: 'center',
-    margin: 2,
-    fontSize: 15,
+    fontSize: 20,
     color: colors.red,
-    marginBottom: 10
+    marginBottom: 10,
+    marginTop: 30,
+    fontWeight: 'bold',
+    fontFamily: 'Sketching-Universe',
   }, 
   markerImage: {
     width: 35,
     height: 35,
     borderRadius: 50
   },
-  imagePickerBtn: {
-    color: colors.black,
-    elevation: 5,
-    shadowColor: "black",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 5,
+  imagePickerView: {
+    position: 'absolute',
+    marginTop: 60,
+    width: '90%',
+    height: 100,
+    backgroundColor: colors.grey,
+    zIndex: 1,
+    alignSelf: 'center',
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: colors.navy,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
   },
   calloutTitle: {
     textAlign: 'center',
@@ -173,20 +219,23 @@ const styles = StyleSheet.create({
   calloutTextImportant: {
     textAlign: 'center',
     fontSize: 15,
-    color: colors.baige,
+    color: colors.navy,
   },
   calloutButton: {
     textAlign: 'center',
     margin: 1,
     marginTop: 5,
     fontSize: 15,
-    color: colors.baige,
-    backgroundColor: colors.navy,
+    backgroundColor: colors.grey,
     borderRadius: 25,
     padding: 5,
+    borderWidth: 1,
+    borderColor: colors.navy,
+    borderBottomWidth: 5,
+    borderRightWidth: 5
   },
   callout: {
     width: 150,
     height: 'auto',
-  }
+  },
 })

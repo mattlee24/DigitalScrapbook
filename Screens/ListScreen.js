@@ -22,19 +22,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  imageView: {
-    backgroundColor: colors.orange,
-    width: "98%",
-    height: 200,
-    borderWidth: 5,
-    borderRadius: 20,
-    justifyContent: "center",
-  },
-  imageStyle: {
-    width: "90%", 
-    height: "90%",
-    color: "orange",
-    borderRadius: 20,
-    alignSelf: "center",
-  }
 })

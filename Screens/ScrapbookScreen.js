@@ -7,8 +7,6 @@ import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
 import { collection, doc, getDoc, getDocs, getFirestore, query, where } from "firebase/firestore";
 import { Ionicons } from '@expo/vector-icons';
-import MapView from 'react-native-map-clustering';
-import { Marker } from 'react-native-maps';
 
 const ScrapbookScreen = ({ route, navigation }) => {
 
@@ -46,38 +44,15 @@ const ScrapbookScreen = ({ route, navigation }) => {
       <ScrollView style={styles.ScrollViewcontainer}>
         <View style={styles.titleView} >
             <TouchableOpacity style={styles.buttonback}>
-                <Ionicons name={"arrow-back-circle"} size={45} color={colors.navy} onPress={() => navigation.goBack()}/>
+                <Ionicons name={"arrow-back-circle"} size={45} color={colors.navy} onPress={() => navigation.navigate("HomeScreen")}/>
             </TouchableOpacity>
             <Text style={styles.title}>{title}</Text>
         </View>
-        <View style={styles.mapOuterView} >
-            <MapView
-                mapType={"mutedStandard"}
-                style={styles.map}
-                region={{
-                    latitude: route.params.latitude,
-                    longitude: route.params.longitude,
-                    latitudeDelta: 0.9,
-                    longitudeDelta: 0.5,
-                }}
-                scrollEnabled={false}
-                >
-                <Marker
-                    key={1}
-                    coordinate={{
-                      longitude: route.params.longitude,
-                      latitude: route.params.latitude
-                    }} 
-                    width={"auto"}
-                    height={"auto"}
-                    pinColor={colors.navy}
-                >
-                  <Image source={{ uri: route.params.image }} style={styles.markerImage} />  
-                </Marker>
-            </MapView>
+        <View style={styles.ImageOuterView} >
+          <Image source={{ uri: route.params.image }} style={styles.Image} />  
         </View>
-        <TouchableOpacity style={styles.editView} onPress={() => navigation.push("UpdateScrapbookScreen", {id: title})}>
-            <Text style={styles.title}>Edit Scrapbook</Text>
+        <TouchableOpacity style={styles.editView} onPress={() => navigation.push("UpdateScrapbookScreen", {id: title, image: route.params.image})}>
+            <Text style={styles.edittitle}>Edit Scrapbook</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -91,6 +66,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.baige,
     alignItems: 'center',
+    marginLeft: 2
   },
   ScrollViewcontainer: {
     width: "100%",
@@ -105,9 +81,7 @@ const styles = StyleSheet.create({
   },
   buttonback: {
     alignSelf: "center",
-    marginLeft: 15,
-    position: "absolute",
-    left: 0,
+    position: "relative",
   },
   titleView: {
     width: "95%",
@@ -120,7 +94,8 @@ const styles = StyleSheet.create({
     borderColor: colors.navy,
     borderRightWidth: 5,
     borderBottomWidth: 5,
-    paddingHorizontal: 28
+    paddingHorizontal: 28,
+    flexDirection: 'row'
   },
   editView: {
     width: "95%",
@@ -137,35 +112,41 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
-    marginLeft: 10,
     fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
     width: "100%",
     textAlign: "center",
-    color: colors.navy
+    color: colors.navy,
+    alignSelf: 'center',
+    marginLeft: -20,
+    letterSpacing: 1
   },
-  mapOuterView: {
+  edittitle: {
+    fontSize: 30,
+    fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
+    width: "100%",
+    textAlign: "center",
+    color: colors.navy,
+    alignSelf: 'center',
+    letterSpacing: 1
+  },
+  ImageOuterView: {
     width: "95%",
     height: 200,
     borderWidth: 1,
     borderColor: "transparent",
     alignItems: "center",
     marginTop: 10,
-    borderRadius: 25,
+    borderRadius: 30,
     overflow: (Platform.OS === "ios") ? "visible" : "hidden",
     alignSelf: "center",
     borderWidth: 1,
-    borderColor: colors.navy,
+    borderColor: colors.lightBlue,
     borderRightWidth: 5,
-    borderBottomWidth: 5,
+    borderBottomWidth: 5
 },
-map: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 25,
-},
-markerImage: {
-  width: 35,
-  height: 35,
-  borderRadius: 50
+Image: {
+  width: "100%",
+  height: "100%",
+  borderRadius: 25,
 },
 })

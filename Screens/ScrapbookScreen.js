@@ -25,6 +25,7 @@ const ScrapbookScreen = ({ route, navigation }) => {
   const [ title, setTitle ] = useState("");
   const [ refresh, setRefresh ] = useState(false)
   const [ textSections, setTextSections ] = useState("")
+  const [ otherImages, setOtherImages ] =useState("")
   
   let i = 0;
 
@@ -63,11 +64,34 @@ const ScrapbookScreen = ({ route, navigation }) => {
             textSectionsListUpdate[item.id] = [item.id, item.data().text]
           })
           setTextSections(textSectionsListUpdate)
-          setRefresh(false)
+        } else {
+          setTextSections({})
         }
       }
     }
-    getTextSections()
+
+    async function getOtherImages() {
+      if (title == "") {
+        console.log("Title has not been set yet")
+      } else {
+        const imagesRef = query(collection(db, "Users/"+currentUser.uid+"/Scrapbooks/"+title+"/Images"));
+        const ImagesListUpdate = {}
+        const querySnapshot = await getDocs(imagesRef);
+        if (querySnapshot.size > 0 ) {
+          querySnapshot.forEach((image) => {
+            ImagesListUpdate[image.id] = [image.id, image.data().image]
+          })
+          setOtherImages(ImagesListUpdate)
+        } else {
+          setOtherImages({})
+        }
+      }
+    }
+    getTextSections().then(() => {
+      getOtherImages().then(() => {
+        setRefresh(false)
+      })
+    })
   }
 
   const deleteTextSection = async (sectionName) => {
@@ -76,7 +100,11 @@ const ScrapbookScreen = ({ route, navigation }) => {
     setRefresh(true)
   }
 
-  // console.log(textSections)
+  const deleteImage = async (sectionName) => {
+    await deleteDoc(doc(db, "Users/" + currentUser.uid +"/Scrapbooks/" + title + "/Images", sectionName));
+    Alert.alert("Image Deleted");
+    setRefresh(true)
+  }
 
   if (fontsLoaded) {
     return (
@@ -112,15 +140,17 @@ const ScrapbookScreen = ({ route, navigation }) => {
           })}
           <View style={styles.ScrollViewOuter}>
             <ScrollView horizontal={true} style={styles.horizontalScrollView} showsHorizontalScrollIndicator={false}>
-              <View style={styles.outerImageViewScrollView}>
-                <Image source={{ uri: route.params.image }} style={styles.ScrollImage} /> 
-              </View>
-              <View style={styles.outerImageViewScrollView}>
-                <Image source={{ uri: route.params.image }} style={styles.ScrollImage} /> 
-              </View>
-              <View style={styles.outerImageViewScrollView}>
-                <Image source={{ uri: route.params.image }} style={styles.ScrollImage} /> 
-              </View>
+              {Object.values(otherImages).map(index => {
+              i = i+1
+                return (
+                  <View key={index[0]} style={styles.outerImageViewScrollView}>
+                    <Image source={{ uri: index[1] }} style={styles.ScrollImage} />
+                    <TouchableOpacity style={styles.buttonBin} onPress={() => {deleteImage(index[0])}}>
+                      <Ionicons name={"trash-bin"} size={35} color={colors.red}/>
+                    </TouchableOpacity> 
+                  </View>
+                )
+          })}
             </ScrollView>
           </View>
           <TouchableOpacity style={styles.editView} onPress={() => navigation.push("UpdateScrapbookScreen", {id: title, image: route.params.image})}>

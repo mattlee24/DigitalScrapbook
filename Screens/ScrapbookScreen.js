@@ -106,10 +106,23 @@ const ScrapbookScreen = ({ route, navigation }) => {
                     </Text>
                     <TouchableOpacity style={styles.buttonBin} onPress={() => {deleteTextSection(index[0])}}>
                       <Ionicons name={"trash-bin"} size={35} color={colors.red}/>
-                  </TouchableOpacity>
+                    </TouchableOpacity>
                   </View>
                 )
           })}
+          <View style={styles.ScrollViewOuter}>
+            <ScrollView horizontal={true} style={styles.horizontalScrollView} showsHorizontalScrollIndicator={false}>
+              <View style={styles.outerImageViewScrollView}>
+                <Image source={{ uri: route.params.image }} style={styles.ScrollImage} /> 
+              </View>
+              <View style={styles.outerImageViewScrollView}>
+                <Image source={{ uri: route.params.image }} style={styles.ScrollImage} /> 
+              </View>
+              <View style={styles.outerImageViewScrollView}>
+                <Image source={{ uri: route.params.image }} style={styles.ScrollImage} /> 
+              </View>
+            </ScrollView>
+          </View>
           <TouchableOpacity style={styles.editView} onPress={() => navigation.push("UpdateScrapbookScreen", {id: title, image: route.params.image})}>
               <Text style={styles.edittitle}>Edit Scrapbook</Text>
           </TouchableOpacity>
@@ -258,4 +271,28 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     position: 'absolute',
   },
+  horizontalScrollView: {
+    marginHorizontal: 10,
+    width: '100%',
+    height: '100%'
+  },
+  ScrollViewOuter: {
+    width: "95%",
+    height: 200,
+    alignItems: "center",
+    marginTop: 10,
+    borderRadius: 30,
+    overflow: (Platform.OS === "ios") ? "visible" : "hidden",
+    alignSelf: "center",
+  },
+  ScrollImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 25,
+  },
+  outerImageViewScrollView: {
+    width: 350,
+    height: '100%',
+    marginRight: 10
+  }
 })

@@ -7,6 +7,7 @@ import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
 import { TextInput } from "react-native-gesture-handler";
 import { doc, getDoc, getFirestore, setDoc, deleteDoc, collection, getDocs, query, where } from "firebase/firestore";
+import * as ImagePicker from 'expo-image-picker';
 
 const ScrapbokScreen = ({ route, navigation }) => {
 
@@ -96,6 +97,27 @@ const ScrapbokScreen = ({ route, navigation }) => {
     navigation.push("HomeScreen", {refresh: true})
   }
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+      exif: true
+    });
+
+    if (!result.canceled) {
+        const newImage = doc(db, 'Users/' + currentUser.uid + '/Scrapbooks/'+route.params.id+'/Images', result.assets[0].fileName)
+        const imageData = {
+          image: result.assets[0].uri,
+        }
+        setDoc(newImage, imageData)
+        Alert.alert("Image Added to Scrapbook")
+      } else {
+      Alert.alert("Image Error")
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.ScrollViewcontainer} showsVerticalScrollIndicator={false}>
@@ -174,8 +196,8 @@ const ScrapbokScreen = ({ route, navigation }) => {
           >
             <Text style={styles.AddText}>Add Text Section</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonView}>
-            <Text style={styles.AddText}>Add More Images</Text>
+        <TouchableOpacity style={styles.buttonView} onPress={pickImage}>
+            <Text style={styles.AddText}>Add Another Images</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonView} 
           onPress={async() => {

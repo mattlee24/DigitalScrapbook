@@ -1,11 +1,11 @@
-import { Alert, Button, Pressable, ScrollView, StyleSheet, Text, TouchableHighlight, View, Image, TouchableOpacity } from 'react-native'
+import { Alert, Button, Pressable, ScrollView, StyleSheet, Text, TouchableHighlight, View, Image, TouchableOpacity, AsyncStorage } from 'react-native'
 import React, { useEffect, useState } from "react";
 import colors from '../colors'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { getAuth } from 'firebase/auth';
 import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
-import { collection, doc, getDoc, getDocs, getFirestore, query, where } from "firebase/firestore";
+import { collection, doc, getDocs, getFirestore, query, where, deleteDoc } from "firebase/firestore";
 import { Ionicons } from '@expo/vector-icons';
 
 const ScrapbookScreen = ({ route, navigation }) => {
@@ -17,8 +17,8 @@ const ScrapbookScreen = ({ route, navigation }) => {
 
   const [ title, setTitle ] = useState("");
   const [ refresh, setRefresh ] = useState(false)
-  const [ textSections, setTextSections ] = useState("");
-
+  const [ textSections, setTextSections ] = useState("")
+  
   let i = 0;
 
   const scrapbookRef = query(collection(db, "Users/"+currentUser.uid+"/Scrapbooks"), where("image", "==", route.params.image));
@@ -53,7 +53,7 @@ const ScrapbookScreen = ({ route, navigation }) => {
         const querySnapshot = await getDocs(textSectionsRef);
         if ( querySnapshot.size > 0 ) {
           querySnapshot.forEach((item) => {
-            textSectionsListUpdate[item.id] = [item.data().text]
+            textSectionsListUpdate[item.id] = [item.id, item.data().text]
           })
           setTextSections(textSectionsListUpdate)
           setRefresh(false)
@@ -62,6 +62,14 @@ const ScrapbookScreen = ({ route, navigation }) => {
     }
     getTextSections()
   }
+
+  const deleteTextSection = async (sectionName) => {
+    await deleteDoc(doc(db, "Users/" + currentUser.uid +"/Scrapbooks/" + title + "/TextSections", sectionName));
+    Alert.alert("Section Deleted");
+    setRefresh(true)
+  }
+
+  // console.log(textSections)
 
 
   return (
@@ -76,12 +84,22 @@ const ScrapbookScreen = ({ route, navigation }) => {
         <View style={styles.ImageOuterView} >
           <Image source={{ uri: route.params.image }} style={styles.Image} />  
         </View>
-        <View style={styles.TextSectionOuterView} >
-          {Object.values(textSections).map(index => {
-              i = i+1
-                return 
-            })}
-        </View>
+        {Object.values(textSections).map(index => {
+            i = i+1
+              return (
+                <View key={i} style={styles.TextSectionOuterView} >
+                  <Text style={styles.textSectionTitle}>
+                    {index[0]}{'\n'}
+                  </Text>
+                  <Text style={styles.textSectionContent}>
+                    {index[1]}{'\n'}{'\n'}
+                  </Text>
+                  <TouchableOpacity style={styles.buttonBin} onPress={() => {deleteTextSection(index[0])}}>
+                    <Ionicons name={"trash-bin"} size={35} color={colors.red}/>
+                </TouchableOpacity>
+                </View>
+              )
+        })}
         <TouchableOpacity style={styles.editView} onPress={() => navigation.push("UpdateScrapbookScreen", {id: title, image: route.params.image})}>
             <Text style={styles.edittitle}>Edit Scrapbook</Text>
         </TouchableOpacity>
@@ -183,7 +201,6 @@ const styles = StyleSheet.create({
   },
   TextSectionOuterView: {
     width: "95%",
-    height: 200,
     borderWidth: 1,
     borderColor: "transparent",
     alignItems: "center",
@@ -194,6 +211,28 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.navy,
     borderRightWidth: 5,
-    borderBottomWidth: 5
+    borderBottomWidth: 5,
+    paddingTop: 15,
+    paddingHorizontal: 10,
+    paddingBottom: 20
+  },
+  textSectionTitle: {
+    color: colors.navy,
+    fontWeight: 'bold',
+    fontSize: 35,
+    letterSpacing: 1,
+    marginBottom: -20
+  },
+  textSectionContent: {
+    color: colors.navy,
+    fontSize: 15,
+    letterSpacing: 1,
+    textAlign: 'center'
+  },
+  buttonBin: {
+    position: "absolute",
+    right: 0,
+    paddingRight: 10,
+    paddingTop: 15
   },
 })

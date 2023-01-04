@@ -10,9 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app)
 const db = getFirestore(app)
-const currentUser = auth.currentUser
 
 const AddTextSectionScreen = ({ route, navigation }) => {
 
@@ -21,7 +19,7 @@ const AddTextSectionScreen = ({ route, navigation }) => {
 
     const AddTextSection = async () => {
         if ( name != "" && text != ""){
-            const newTextSection = doc(db, "Users/" + currentUser.uid +"/Scrapbooks/"+route.params.id+"/TextSections/" + name)
+            const newTextSection = doc(db, "Users/" + route.params.userID +"/Scrapbooks/"+route.params.id+"/TextSections/" + name)
             const textData = {
                 text: text
             };

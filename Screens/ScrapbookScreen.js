@@ -15,19 +15,22 @@ const ScrapbookScreen = ({ route, navigation }) => {
   const db = getFirestore(app)
   const currentUser = auth.currentUser
 
-  const [title, setTitle] = useState("");
+  const [ title, setTitle ] = useState("");
+  const [ refresh, setRefresh ] = useState(false)
+  const [ textSections, setTextSections ] = useState("");
 
   let i = 0;
 
-  const docRef = query(collection(db, "Users/"+currentUser.uid+"/Scrapbooks"), where("image", "==", route.params.image));
+  const scrapbookRef = query(collection(db, "Users/"+currentUser.uid+"/Scrapbooks"), where("image", "==", route.params.image));
 
   useEffect(() => {
     async function getScrapbook() {
-      const querySnapshot = await getDocs(docRef);
+      const querySnapshot = await getDocs(scrapbookRef);
       if (querySnapshot.size > 0){
         querySnapshot.forEach((item) => {
           if (item.exists()){
             setTitle(item.id)
+            setRefresh(true)
           } else {
             console.log("Error")
           }
@@ -36,8 +39,30 @@ const ScrapbookScreen = ({ route, navigation }) => {
         getScrapbook()
       }
     }
+
     getScrapbook()
   }, []);
+
+  if (refresh) {
+    async function getTextSections() {
+      if (title == "") {
+        console.log("Title has not been set yet");
+      } else {
+        const textSectionsRef = query(collection(db, "Users/"+currentUser.uid+"/Scrapbooks/"+title+"/TextSections"));
+        const textSectionsListUpdate = {}
+        const querySnapshot = await getDocs(textSectionsRef);
+        if ( querySnapshot.size > 0 ) {
+          querySnapshot.forEach((item) => {
+            textSectionsListUpdate[item.id] = [item.data().text]
+          })
+          setTextSections(textSectionsListUpdate)
+          setRefresh(false)
+        }
+      }
+    }
+    getTextSections()
+  }
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -50,6 +75,12 @@ const ScrapbookScreen = ({ route, navigation }) => {
         </View>
         <View style={styles.ImageOuterView} >
           <Image source={{ uri: route.params.image }} style={styles.Image} />  
+        </View>
+        <View style={styles.TextSectionOuterView} >
+          {Object.values(textSections).map(index => {
+              i = i+1
+                return 
+            })}
         </View>
         <TouchableOpacity style={styles.editView} onPress={() => navigation.push("UpdateScrapbookScreen", {id: title, image: route.params.image})}>
             <Text style={styles.edittitle}>Edit Scrapbook</Text>
@@ -70,6 +101,7 @@ const styles = StyleSheet.create({
   },
   ScrollViewcontainer: {
     width: "100%",
+    marginBottom: 80
   },
   buttonEdit: {
     alignSelf: "center",
@@ -143,10 +175,25 @@ const styles = StyleSheet.create({
     borderColor: colors.lightBlue,
     borderRightWidth: 5,
     borderBottomWidth: 5
-},
-Image: {
-  width: "100%",
-  height: "100%",
-  borderRadius: 25,
-},
+  },
+  Image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 25,
+  },
+  TextSectionOuterView: {
+    width: "95%",
+    height: 200,
+    borderWidth: 1,
+    borderColor: "transparent",
+    alignItems: "center",
+    marginTop: 10,
+    borderRadius: 30,
+    overflow: (Platform.OS === "ios") ? "visible" : "hidden",
+    alignSelf: "center",
+    borderWidth: 1,
+    borderColor: colors.navy,
+    borderRightWidth: 5,
+    borderBottomWidth: 5
+  },
 })

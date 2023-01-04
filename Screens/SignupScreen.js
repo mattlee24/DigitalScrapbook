@@ -18,9 +18,15 @@ import { getStorage, ref, uploadBytes } from "firebase/storage"
 import colors from "../colors";
 import * as ImagePicker from "expo-image-picker";
 import CreateAccountLoading from "../Components/CreateAccountLoading";
+import { useFonts } from 'expo-font';
 
 
 export default function SignupScreen({ navigation }) {
+
+  const [fontsLoaded] = useFonts({
+    'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
+    'Handwriting': require('../assets/fonts/Handwriting.ttf'),
+  });
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -87,138 +93,140 @@ export default function SignupScreen({ navigation }) {
       <CreateAccountLoading />
     )
   } else {
-    return (
-      <KeyboardAvoidingView style={styles.container1} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-        <Text style={styles.title}>Welcome to Your Digital Scrapbook</Text>
-        {/* <Book /> */}
-        <View style={styles.container}>
-          {/* <Image source={{ uri }} style={[styles.image, StyleSheet.absoluteFill]}/> */}
-          <View style={styles.lightimage}>
-            <Text style={styles.lgntitle}>Create Account</Text>
-            <View style={styles.blur}>
-              <TouchableOpacity  onPress={onChooseImage}>
-                <View style={styles.imagepicker}>
-                  <Image
-                    source={{ uri: profilePic }}
-                    style={styles.imageProfilePic}
+    if (fontsLoaded) {
+      return (
+        <KeyboardAvoidingView style={styles.container1} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+          <Text style={styles.title} Keyboard>Welcome to Your Digital Scrapbook</Text>
+          {/* <Book /> */}
+          <View style={styles.container}>
+            {/* <Image source={{ uri }} style={[styles.image, StyleSheet.absoluteFill]}/> */}
+            <View style={styles.lightimage}>
+              <Text style={styles.lgntitle}>Create Account</Text>
+              <View style={styles.blur}>
+                <TouchableOpacity  onPress={onChooseImage}>
+                  <View style={styles.imagepicker}>
+                    <Image
+                      source={{ uri: profilePic }}
+                      style={styles.imageProfilePic}
+                    />
+                    { <MaterialCommunityIcons
+                      name="camera"
+                      size={35}
+                      color="#fff"
+                      style={{
+                        opacity: 0.5,
+                        alignSelf: "center",
+                        position: "absolute",
+                        marginTop: 40
+                      }}
+                      /> }
+                  </View>
+                </TouchableOpacity>
+                <View style={styles.lightInput}>
+                  <MaterialCommunityIcons
+                    style={styles.iconstyle}
+                    name="account"
+                    size={20}
+                    color={colors.navy}
                   />
-                  { <MaterialCommunityIcons
-                    name="camera"
-                    size={35}
-                    color="#fff"
-                    style={{
-                      opacity: 0.5,
-                      alignSelf: "center",
-                      position: "absolute",
-                      marginTop: 40
+                  <TextInput
+                    inputStyle={{
+                      fontSize: 14,
                     }}
-                    /> }
+                    color={colors.navy}
+                    placeholderTextColor={colors.lightnavy}
+                    placeholder="First Name"
+                    cursorColor={colors.navy}
+                    autoCapitalize="none"
+                    keyboardType="default"
+                    textContentType="givenName"
+                    value={firstName}
+                    onChangeText={(text) => setFirstName(text)}
+                  />
                 </View>
-              </TouchableOpacity>
-              <View style={styles.lightInput}>
-                <MaterialCommunityIcons
-                  style={styles.iconstyle}
-                  name="account"
-                  size={20}
-                  color={colors.navy}
-                />
-                <TextInput
-                  inputStyle={{
-                    fontSize: 14,
-                  }}
-                  color={colors.navy}
-                  placeholderTextColor={colors.lightnavy}
-                  placeholder="First Name"
-                  cursorColor={colors.navy}
-                  autoCapitalize="none"
-                  keyboardType="default"
-                  textContentType="givenName"
-                  value={firstName}
-                  onChangeText={(text) => setFirstName(text)}
-                />
+                <View style={styles.lightInput}>
+                  <MaterialCommunityIcons
+                    style={styles.iconstyle}
+                    name="account"
+                    size={20}
+                    color={colors.navy}
+                  />
+                  <TextInput
+                    inputStyle={{
+                      fontSize: 14,
+                    }}
+                    color={colors.navy}
+                    placeholderTextColor={colors.lightnavy}
+                    placeholder="Last Name"
+                    cursorColor={colors.navy}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    textContentType="familyName"
+                    value={lastName}
+                    onChangeText={(text) => setLastName(text)}
+                  />
+                </View>
+                <View style={styles.lightInput}>
+                  <MaterialCommunityIcons
+                    style={styles.iconstyle}
+                    name="email"
+                    size={20}
+                    color={colors.navy}
+                  />
+                  <TextInput
+                    inputStyle={{
+                      fontSize: 14,
+                    }}
+                    color={colors.navy}
+                    placeholderTextColor={colors.lightnavy}
+                    placeholder="Email"
+                    cursorColor={colors.navy}
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    textContentType="emailAddress"
+                    value={email}
+                    onChangeText={(text) => setEmail(text)}
+                  />
+                </View>
+                <View style={styles.lightInput}>
+                  <MaterialCommunityIcons
+                    style={styles.iconstyle}
+                    name="lock"
+                    size={20}
+                    color={colors.navy}
+                  />
+                  <TextInput
+                    inputStyle={{
+                      fontSize: 14,
+                    }}
+                    color={colors.navy}
+                    placeholderTextColor={colors.lightnavy}
+                    placeholder="Password"
+                    cursorColor={colors.navy}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    secureTextEntry={true}
+                    textContentType="password"
+                    value={password}
+                    onChangeText={(text) => setPassword(text)}
+                  />
+                </View>
+                <TouchableOpacity
+                  onPress={onHandleSignup}
+                  style={styles.button}
+                ><Text style={styles.textColor}>Create Account</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("Login")}
+                  style={styles.buttonLogin}
+                ><Text style={styles.textColorLogin}>Already have an account? Login</Text>
+                </TouchableOpacity>
               </View>
-              <View style={styles.lightInput}>
-                <MaterialCommunityIcons
-                  style={styles.iconstyle}
-                  name="account"
-                  size={20}
-                  color={colors.navy}
-                />
-                <TextInput
-                  inputStyle={{
-                    fontSize: 14,
-                  }}
-                  color={colors.navy}
-                  placeholderTextColor={colors.lightnavy}
-                  placeholder="Last Name"
-                  cursorColor={colors.navy}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  textContentType="familyName"
-                  value={lastName}
-                  onChangeText={(text) => setLastName(text)}
-                />
-              </View>
-              <View style={styles.lightInput}>
-                <MaterialCommunityIcons
-                  style={styles.iconstyle}
-                  name="email"
-                  size={20}
-                  color={colors.navy}
-                />
-                <TextInput
-                  inputStyle={{
-                    fontSize: 14,
-                  }}
-                  color={colors.navy}
-                  placeholderTextColor={colors.lightnavy}
-                  placeholder="Email"
-                  cursorColor={colors.navy}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  textContentType="emailAddress"
-                  value={email}
-                  onChangeText={(text) => setEmail(text)}
-                />
-              </View>
-              <View style={styles.lightInput}>
-                <MaterialCommunityIcons
-                  style={styles.iconstyle}
-                  name="lock"
-                  size={20}
-                  color={colors.navy}
-                />
-                <TextInput
-                  inputStyle={{
-                    fontSize: 14,
-                  }}
-                  color={colors.navy}
-                  placeholderTextColor={colors.lightnavy}
-                  placeholder="Password"
-                  cursorColor={colors.navy}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  secureTextEntry={true}
-                  textContentType="password"
-                  value={password}
-                  onChangeText={(text) => setPassword(text)}
-                />
-              </View>
-              <TouchableOpacity
-                onPress={onHandleSignup}
-                style={styles.button}
-              ><Text style={styles.textColor}>Create Account</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("Login")}
-                style={styles.buttonLogin}
-              ><Text style={styles.textColorLogin}>Already have an account? Login</Text>
-              </TouchableOpacity>
             </View>
           </View>
-        </View>
-      </KeyboardAvoidingView>
-    );
+        </KeyboardAvoidingView>
+      );
+    }
   }
 }
 
@@ -228,10 +236,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.baige,
     justifyContent: "flex-end",
+    zIndex: 0
   },
   container1: {
     flex: 1,
     backgroundColor: colors.baige,
+    zIndex: 0
   },
   imageProfilePic: {
     flex: 0,
@@ -265,7 +275,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 50,
     borderTopLeftRadius: 50,
     paddingVertical: 10,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    zIndex: 1,
+    position: 'absolute'
   },
   blur: {
     marginVertical: 10,
@@ -273,7 +285,8 @@ const styles = StyleSheet.create({
     width:"90%",
     alignSelf: "center",
     justifyContent: "center",
-    alignContent: "center"
+    alignContent: "center",
+    zIndex: 1
   },
   button: {
     alignItems: 'center',
@@ -281,18 +294,12 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 15,
-    elevation: 5,
-    shadowColor: "black",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 5,
     backgroundColor: colors.grey,
     borderColor: colors.navy,
     borderWidth: 1,
     marginTop: 10,
+    borderBottomWidth: 5,
+    borderRightWidth: 5
   },
   buttonLogin: {
     alignItems: 'center',
@@ -309,18 +316,21 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   textColor: {
-    color: colors.navy
+    color: colors.navy,
+    fontFamily: 'Sketching-Universe',
+    fontSize: 25
   },
   textColorLogin: {
-    color: colors.navy
+    color: colors.navy,
+    fontFamily: 'Sketching-Universe',
+    fontSize: 18
   },
   title: {
-    padding: 1,
-    fontSize: 30,
-    paddingHorizontal: 5,
+    fontSize: 80,
+    paddingHorizontal: 15,
     fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
     width: "100%",
-    marginTop: 50,
+    marginTop: 60,
     textAlign: "center",
     textShadowColor: "grey",
     textShadowRadius: 10,
@@ -328,10 +338,11 @@ const styles = StyleSheet.create({
       width: 3,
       height: 3
     },
-    color: colors.navy
+    color: colors.navy,
+    fontFamily: 'Sketching-Universe',
   },
   lgntitle: {
-    fontSize: 50,
+    fontSize: 70,
     fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
     width: "100%",
     textAlign: "center",
@@ -342,6 +353,7 @@ const styles = StyleSheet.create({
       height: 3
     },
     color: colors.navy,
+    fontFamily: 'Sketching-Universe',
   },
   forgotpassword: {
     color: colors.navy,
@@ -357,14 +369,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightBlue,
     paddingLeft: 5,
     borderRadius: 15,
-    shadowColor: "black",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 5,
-    elevation: 5
+    borderWidth: 1,
+    borderColor: colors.navy,
+    borderBottomWidth: 5,
+    borderRightWidth: 5
   },
   iconstyle: { margin: 10 },
   textview: {

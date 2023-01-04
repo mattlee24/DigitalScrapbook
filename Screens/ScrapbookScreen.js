@@ -134,7 +134,7 @@ const ScrapbookScreen = ({ route, navigation }) => {
   if (fontsLoaded) {
     return (
       <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.ScrollViewcontainer}>
+        <ScrollView style={styles.ScrollViewcontainer} showsVerticalScrollIndicator={false}>
           <View style={styles.titleView} >
               <TouchableOpacity style={styles.buttonback}>
                   <Ionicons name={"arrow-back-circle"} size={45} color={colors.navy} onPress={() => navigation.navigate("HomeScreen")}/>
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   outerImageViewScrollView: {
-    width: 350,
+    width: 300,
     height: '100%',
     marginRight: 10
   }

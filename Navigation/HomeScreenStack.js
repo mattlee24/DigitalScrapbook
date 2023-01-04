@@ -3,7 +3,6 @@ import HomeScreen from '../Screens/HomeScreen';
 import ScrapbokScreen from '../Screens/ScrapbookScreen';
 import UpdateScrapbookScreen from '../Screens/UpdateScrapbookScreen'
 import AddTextSectionScreen from '../Screens/AddTextSectionScreen';
-import AddHandNotesScreen from '../Screens/AddHandNotesScreen';
 
 const HomeScreenStack = () => {
     const Stack = createStackNavigator();
@@ -13,7 +12,6 @@ const HomeScreenStack = () => {
             <Stack.Screen name="ScrapbookScreen" component={ScrapbokScreen} />
             <Stack.Screen name="UpdateScrapbookScreen" component={UpdateScrapbookScreen} />
             <Stack.Screen name="AddTextSectionScreen" component={AddTextSectionScreen} />
-            <Stack.Screen name="AddHandNotesScreen" component={AddHandNotesScreen} />
         </Stack.Navigator> 
     )
 }

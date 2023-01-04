@@ -7,8 +7,15 @@ import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
 import { collection, doc, getDocs, getFirestore, query, where, deleteDoc } from "firebase/firestore";
 import { Ionicons } from '@expo/vector-icons';
+import PageCoil from '../Components/PageCoil';
+import { useFonts } from 'expo-font';
 
 const ScrapbookScreen = ({ route, navigation }) => {
+
+  const [fontsLoaded] = useFonts({
+    'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
+    'Handwriting': require('../assets/fonts/Handwriting.ttf'),
+  });
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app)
@@ -71,41 +78,45 @@ const ScrapbookScreen = ({ route, navigation }) => {
 
   // console.log(textSections)
 
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.ScrollViewcontainer}>
-        <View style={styles.titleView} >
-            <TouchableOpacity style={styles.buttonback}>
-                <Ionicons name={"arrow-back-circle"} size={45} color={colors.navy} onPress={() => navigation.navigate("HomeScreen")}/>
-            </TouchableOpacity>
-            <Text style={styles.title}>{title}</Text>
-        </View>
-        <View style={styles.ImageOuterView} >
-          <Image source={{ uri: route.params.image }} style={styles.Image} />  
-        </View>
-        {Object.values(textSections).map(index => {
-            i = i+1
-              return (
-                <View key={i} style={styles.TextSectionOuterView} >
-                  <Text style={styles.textSectionTitle}>
-                    {index[0]}{'\n'}
-                  </Text>
-                  <Text style={styles.textSectionContent}>
-                    {index[1]}{'\n'}{'\n'}
-                  </Text>
-                  <TouchableOpacity style={styles.buttonBin} onPress={() => {deleteTextSection(index[0])}}>
-                    <Ionicons name={"trash-bin"} size={35} color={colors.red}/>
-                </TouchableOpacity>
-                </View>
-              )
-        })}
-        <TouchableOpacity style={styles.editView} onPress={() => navigation.push("UpdateScrapbookScreen", {id: title, image: route.params.image})}>
-            <Text style={styles.edittitle}>Edit Scrapbook</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
-  )
+  if (fontsLoaded) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView style={styles.ScrollViewcontainer}>
+          <View style={styles.titleView} >
+              <TouchableOpacity style={styles.buttonback}>
+                  <Ionicons name={"arrow-back-circle"} size={45} color={colors.navy} onPress={() => navigation.navigate("HomeScreen")}/>
+              </TouchableOpacity>
+              <Text style={styles.title}>{title}</Text>
+          </View>
+          <View style={styles.ImageOuterView} >
+            <PageCoil />
+            <Image source={{ uri: route.params.image }} style={styles.Image} />  
+          </View>
+          {Object.values(textSections).map(index => {
+              i = i+1
+                return (
+                  <View key={i} style={styles.TextSectionOuterView} >
+                    <PageCoil />
+                    <Image source={{ uri: "https://img.freepik.com/free-vector/blank-white-notepaper-design-vector_53876-161340.jpg" }} style={styles.ImageBackroundTextSection} /> 
+                    <Text style={styles.textSectionTitle}>
+                      {index[0]}{'\n'}
+                    </Text>
+                    <Text style={styles.textSectionContent}>
+                      {index[1]}{'\n'}{'\n'}
+                    </Text>
+                    <TouchableOpacity style={styles.buttonBin} onPress={() => {deleteTextSection(index[0])}}>
+                      <Ionicons name={"trash-bin"} size={35} color={colors.red}/>
+                  </TouchableOpacity>
+                  </View>
+                )
+          })}
+          <TouchableOpacity style={styles.editView} onPress={() => navigation.push("UpdateScrapbookScreen", {id: title, image: route.params.image})}>
+              <Text style={styles.edittitle}>Edit Scrapbook</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    )
+  }
 }
 
 export default ScrapbookScreen
@@ -145,7 +156,8 @@ const styles = StyleSheet.create({
     borderRightWidth: 5,
     borderBottomWidth: 5,
     paddingHorizontal: 28,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginBottom: 10,
   },
   editView: {
     width: "95%",
@@ -158,26 +170,28 @@ const styles = StyleSheet.create({
     borderColor: colors.navy,
     borderRightWidth: 5,
     borderBottomWidth: 5,
-    marginTop: 10,
+    marginTop: 20,
   },
   title: {
-    fontSize: 30,
+    fontSize: 40,
     fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
     width: "100%",
     textAlign: "center",
     color: colors.navy,
     alignSelf: 'center',
     marginLeft: -20,
-    letterSpacing: 1
+    letterSpacing: 1,
+    fontFamily: 'Sketching-Universe',
   },
   edittitle: {
-    fontSize: 30,
+    fontSize: 50,
     fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
     width: "100%",
     textAlign: "center",
     color: colors.navy,
     alignSelf: 'center',
-    letterSpacing: 1
+    letterSpacing: 1,
+    fontFamily: 'Sketching-Universe',
   },
   ImageOuterView: {
     width: "95%",
@@ -189,7 +203,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     overflow: (Platform.OS === "ios") ? "visible" : "hidden",
     alignSelf: "center",
-    borderWidth: 1,
+    borderWidth: 1, 
     borderColor: colors.lightBlue,
     borderRightWidth: 5,
     borderBottomWidth: 5
@@ -198,13 +212,14 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 25,
+    position: 'absolute'
   },
   TextSectionOuterView: {
     width: "95%",
     borderWidth: 1,
     borderColor: "transparent",
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 20,
     borderRadius: 30,
     overflow: (Platform.OS === "ios") ? "visible" : "hidden",
     alignSelf: "center",
@@ -212,27 +227,35 @@ const styles = StyleSheet.create({
     borderColor: colors.navy,
     borderRightWidth: 5,
     borderBottomWidth: 5,
-    paddingTop: 15,
-    paddingHorizontal: 10,
-    paddingBottom: 20
   },
   textSectionTitle: {
     color: colors.navy,
     fontWeight: 'bold',
     fontSize: 35,
     letterSpacing: 1,
-    marginBottom: -20
+    marginBottom: -20,
+    marginTop: 10,
+    fontFamily: 'Sketching-Universe',
   },
   textSectionContent: {
     color: colors.navy,
-    fontSize: 15,
+    fontSize: 20,
     letterSpacing: 1,
-    textAlign: 'center'
+    textAlign: 'center',
+    paddingHorizontal: 45,
+    fontFamily: 'Handwriting'
   },
   buttonBin: {
     position: "absolute",
     right: 0,
+    bottom: 0,
     paddingRight: 10,
-    paddingTop: 15
+    paddingBottom: 10
+  },
+  ImageBackroundTextSection: {
+    width: "100%",
+    height: '100%',
+    borderRadius: 25,
+    position: 'absolute',
   },
 })

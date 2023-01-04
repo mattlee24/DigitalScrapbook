@@ -174,11 +174,6 @@ const ScrapbokScreen = ({ route, navigation }) => {
           >
             <Text style={styles.AddText}>Add Text Section</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonView} onPress={() => {
-            navigation.push("AddHandNotesScreen", {id: route.params.id, userID: currentUser.uid})
-          }}>
-            <Text style={styles.AddText}>Add Hand Written Note</Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.buttonView}>
             <Text style={styles.AddText}>Add More Images</Text>
         </TouchableOpacity>

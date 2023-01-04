@@ -47,9 +47,34 @@ const ScrapbookScreen = ({ route, navigation }) => {
         getScrapbook()
       }
     }
-
     getScrapbook()
   }, []);
+
+  for (let i = 0; i<1; i++){
+    try {
+      if (route.params.refresh) {
+        async function getScrapbook() {
+          const querySnapshot = await getDocs(scrapbookRef);
+          if (querySnapshot.size > 0){
+            querySnapshot.forEach((item) => {
+              if (item.exists()){
+                setTitle(item.id)
+              } else {
+                console.log("Error")
+              }
+            })
+          } else {
+            getScrapbook()
+          }
+        }
+        getScrapbook().then(()=>{
+          
+        })
+      }
+    } catch {
+      console.log("Running Correctly")
+    }
+  }
 
   if (refresh) {
     async function getTextSections() {
@@ -150,7 +175,7 @@ const ScrapbookScreen = ({ route, navigation }) => {
                     </TouchableOpacity> 
                   </View>
                 )
-          })}
+              })}
             </ScrollView>
           </View>
           <TouchableOpacity style={styles.editView} onPress={() => navigation.push("UpdateScrapbookScreen", {id: title, image: route.params.image})}>
@@ -310,7 +335,7 @@ const styles = StyleSheet.create({
     width: "95%",
     height: 200,
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 20,
     borderRadius: 30,
     overflow: (Platform.OS === "ios") ? "visible" : "hidden",
     alignSelf: "center",

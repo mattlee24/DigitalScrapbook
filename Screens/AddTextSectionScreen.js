@@ -8,11 +8,17 @@ import { initializeApp } from 'firebase/app';
 import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useFonts } from 'expo-font';
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app)
 
 const AddTextSectionScreen = ({ route, navigation }) => {
+
+    const [fontsLoaded] = useFonts({
+        'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
+        'Handwriting': require('../assets/fonts/Handwriting.ttf'),
+      });
 
     const [ name, setName ] = useState("")
     const [ text, setText ] = useState("")
@@ -25,59 +31,65 @@ const AddTextSectionScreen = ({ route, navigation }) => {
             };
             setDoc(newTextSection, textData)
             Alert.alert("New Text Section Added")
+            navigation.goBack()
         } else {
             Alert.alert("Please provide all the required information")
         }
     }
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView style={styles.ScrollViewcontainer} showsVerticalScrollIndicator={false}>
-                <View style={styles.formContainer}>
-                    <Text style={styles.title}>Add Text Section:</Text>
-                    <View style={styles.blur}>
-                        <View style={styles.titleInput}>
-                            <TextInput
-                                color={colors.navy}
-                                multiline={true}
-                                fontSize={25}
-                                placeholderTextColor={colors.lightnavy}
-                                placeholder={'Name...\n\n(Setting the same name as another text section will cause previous section(s) to be overidden)'}
-                                autoCapitalize="none"
-                                value={name}
-                                onChangeText={(name) => {
-                                setName(name)
-                                }}
-                            />
-                        </View>
-                        <View style={styles.titleInput}>
-                            <TextInput
-                                color={colors.navy}
-                                multiline={true}
-                                fontSize={25}
-                                placeholderTextColor={colors.lightnavy}
-                                placeholder={'Start Typing...'}
-                                autoCapitalize="none"
-                                value={text}
-                                onChangeText={(text) => {
-                                setText(text)
-                                }}
-                            />
-                            <TouchableOpacity style={styles.buttonDone} onPress={() => Keyboard.dismiss}>
-                                <Ionicons name={"checkmark-circle"} size={35} color={colors.navy}/>
-                            </TouchableOpacity>
+    if (fontsLoaded) {
+        return (
+            <SafeAreaView style={styles.container}>
+                <ScrollView style={styles.ScrollViewcontainer} showsVerticalScrollIndicator={false}>
+                    <View style={styles.formContainer}>
+                        <Text style={styles.title}>Add Text Section:</Text>
+                        <Text style={styles.subtitle}>Setting the same name will result in overwritng a section.</Text>
+                        <View style={styles.blur}>
+                            <View style={styles.titleInput}>
+                                <TextInput
+                                    style={styles.inputStyle}
+                                    color={colors.navy}
+                                    fontSize={30}
+                                    placeholderTextColor={colors.lightnavy}
+                                    placeholder={'Name...'}
+                                    autoCapitalize="none"
+                                    value={name}
+                                    onChangeText={(name) => {
+                                    setName(name)
+                                    }}
+                                />
+                            </View>
+                            <View style={styles.titleInput}>
+                                <TextInput
+                                    style={styles.inputStyle}
+                                    color={colors.navy}
+                                    multiline={true}
+                                    fontSize={30}
+                                    placeholderTextColor={colors.lightnavy}
+                                    placeholder={'Start Typing...'}
+                                    autoCapitalize="none"
+                                    value={text}
+                                    onChangeText={(text) => {
+                                    setText(text)
+                                    }}
+                                />
+                                <TouchableOpacity style={styles.buttonDone} onPress={() => Keyboard.dismiss}>
+                                    <Ionicons name={"checkmark-circle"} size={35} color={colors.navy}/>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
-                </View>
-                <TouchableOpacity style={styles.buttonView} onPress={() => {AddTextSection()}}>
-                    <Text style={styles.AddText}>Add</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonView} onPress={() => {navigation.goBack()}}>
-                    <Text style={styles.GoBackText}>Go Back</Text>
-                </TouchableOpacity>
-            </ScrollView>
-        </SafeAreaView>
-    )
+                    <TouchableOpacity style={styles.buttonView} onPress={() => {AddTextSection()}}>
+                        <Text style={styles.AddText}>Add</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonView} onPress={() => {navigation.goBack()}}>
+                        <Text style={styles.GoBackText}>Go Back</Text>
+                    </TouchableOpacity>
+                </ScrollView>
+            </SafeAreaView>
+        )
+    }
+
 }
 
 export default AddTextSectionScreen
@@ -110,14 +122,26 @@ const styles = StyleSheet.create({
         alignSelf: "center",
     },
     title: {
-        fontSize: 30,
+        fontSize: 60,
         fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
         width: "90%",
         alignSelf: 'center',
         textAlign: "center",
         color: colors.navy,
         marginBottom: 5,
-        letterSpacing: 1
+        letterSpacing: 1,
+        fontFamily: 'Sketching-Universe',
+      },
+      subtitle: {
+        fontSize: 25,
+        fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
+        width: "90%",
+        alignSelf: 'center',
+        textAlign: "center",
+        color: colors.red,
+        marginBottom: 5,
+        letterSpacing: 1,
+        fontFamily: 'Sketching-Universe',
       },
       titleInput: {
         flexDirection: "row",
@@ -151,19 +175,24 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
       },
       AddText: {
-        fontSize: 30,
+        fontSize: 60,
         fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
         width: "100%",
         textAlign: "center",
         color: colors.green,
-        letterSpacing: 1
+        letterSpacing: 1,
+        fontFamily: 'Sketching-Universe',
       },
       GoBackText: {
-        fontSize: 30,
+        fontSize: 60,
         fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
         width: "100%",
         textAlign: "center",
         color: colors.navy,
-        letterSpacing: 1
+        letterSpacing: 1,
+        fontFamily: 'Sketching-Universe',
       },
+      inputStyle: {
+        fontFamily: 'Handwriting'
+      }
 })

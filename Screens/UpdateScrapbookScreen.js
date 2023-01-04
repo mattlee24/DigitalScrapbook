@@ -8,8 +8,14 @@ import { initializeApp } from 'firebase/app';
 import { TextInput } from "react-native-gesture-handler";
 import { doc, getDoc, getFirestore, setDoc, deleteDoc, collection, getDocs, query, where } from "firebase/firestore";
 import * as ImagePicker from 'expo-image-picker';
+import { useFonts } from 'expo-font';
 
 const ScrapbokScreen = ({ route, navigation }) => {
+
+  const [fontsLoaded] = useFonts({
+    'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
+    'Handwriting': require('../assets/fonts/Handwriting.ttf'),
+  });
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app)
@@ -118,100 +124,99 @@ const ScrapbokScreen = ({ route, navigation }) => {
     }
   };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.ScrollViewcontainer} showsVerticalScrollIndicator={false}>
-        <View style={styles.formContainer}>
-          <Text style={styles.lgntitle}>Change Scrapbook Name:</Text>
-          <View style={styles.blur}>
-            <View style={styles.titleInput}>
-              <TextInput
-                inputStyle={{
-                  fontSize: 14,
-                }}
-                color={colors.navy}
-                placeholderTextColor={colors.lightnavy}
-                placeholder={currentTitle}
-                autoCapitalize="none"
-                value={title}
-                onChangeText={(text) => {
-                  setTitle(text)
-                }}
-              />
+  if (fontsLoaded){
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView style={styles.ScrollViewcontainer} showsVerticalScrollIndicator={false}>
+          <View style={styles.formContainer}>
+            <Text style={styles.lgntitle}>Change Scrapbook Name:</Text>
+            <View style={styles.blur}>
+              <View style={styles.titleInput}>
+                <TextInput
+                  style={styles.inputStyle}
+                  fontSize={20}
+                  color={colors.navy}
+                  placeholderTextColor={colors.lightnavy}
+                  placeholder={currentTitle}
+                  autoCapitalize="none"
+                  value={title}
+                  onChangeText={(text) => {
+                    setTitle(text)
+                  }}
+                />
+              </View>
+              <TouchableOpacity
+                onPress={updateScrapbookName}
+                style={styles.button}
+              >
+                <Text style={styles.updateScrapbookNameText}>Update Scrapbook Name</Text>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              onPress={updateScrapbookName}
-              style={styles.button}
-            >
-              <Text style={styles.textColor}>Update Scrapbook Name</Text>
-            </TouchableOpacity>
           </View>
-        </View>
-        <View style={styles.formContainer}>
-          <Text style={styles.lgntitle}>Change Scrapbook Coordinates:</Text>
-          <View style={styles.blur}>
-            <View style={styles.titleInput}>
-              <TextInput
-                inputStyle={{
-                  fontSize: 14,
-                }}
-                color={colors.navy}
-                placeholderTextColor={colors.lightnavy}
-                placeholder="Longitude"
-                keyboardType="numbers-and-punctuation"
-                autoCapitalize="none"
-                value={longitude}
-                onChangeText={(text) => {
-                  setLongitude(text)
-                }}
-              />
+          <View style={styles.formContainer}>
+            <Text style={styles.lgntitle}>Change Scrapbook Coordinates:</Text>
+            <View style={styles.blur}>
+              <View style={styles.titleInput}>
+                <TextInput
+                  style={styles.inputStyle}
+                  fontSize={25}
+                  color={colors.navy}
+                  placeholderTextColor={colors.lightnavy}
+                  placeholder="Longitude"
+                  keyboardType="numbers-and-punctuation"
+                  autoCapitalize="none"
+                  value={longitude}
+                  onChangeText={(text) => {
+                    setLongitude(text)
+                  }}
+                />
+              </View>
+              <View style={styles.titleInput}>
+                <TextInput
+                  style={styles.inputStyle}
+                  fontSize={25}
+                  color={colors.navy}
+                  placeholderTextColor={colors.lightnavy}
+                  placeholder="Latitude"
+                  keyboardType="numbers-and-punctuation"
+                  autoCapitalize="none"
+                  value={latitude}
+                  onChangeText={(text) => {
+                    setLatitude(text)
+                  }}
+                />
+              </View>
+              <TouchableOpacity
+                onPress={updateCoordinates}
+                style={styles.button}
+              >
+                <Text style={styles.updateSrapbookCoordsText}>Update Scrapbook Coordinates</Text>
+              </TouchableOpacity>
             </View>
-            <View style={styles.titleInput}>
-              <TextInput
-                inputStyle={{
-                  fontSize: 14,
-                }}
-                color={colors.navy}
-                placeholderTextColor={colors.lightnavy}
-                placeholder="Latitude"
-                keyboardType="numbers-and-punctuation"
-                autoCapitalize="none"
-                value={latitude}
-                onChangeText={(text) => {
-                  setLatitude(text)
-                }}
-              />
-            </View>
-            <TouchableOpacity
-              onPress={updateCoordinates}
-              style={styles.button}
-            >
-              <Text style={styles.textColor}>Update Scrapbook Coordinates</Text>
-            </TouchableOpacity>
           </View>
-        </View>
-        <TouchableOpacity style={styles.buttonView} onPress={() => {
-            navigation.push("AddTextSectionScreen", {id: route.params.id, userID: currentUser.uid})
-          }}
+          <TouchableOpacity style={styles.buttonView} onPress={() => {
+              navigation.push("AddTextSectionScreen", {id: route.params.id, userID: currentUser.uid})
+            }}
+            >
+              <Text style={styles.AddText}>Add Text Section</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonView} onPress={pickImage}>
+              <Text style={styles.AddText}>Add Another Image</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonView} 
+            onPress={async() => {
+              deleteScrapbookandMarker()
+            }}
           >
-            <Text style={styles.AddText}>Add Text Section</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonView} onPress={pickImage}>
-            <Text style={styles.AddText}>Add Another Images</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonView} 
-          onPress={async() => {
-            deleteScrapbookandMarker()
-          }}
-        >
-          <Text style={styles.DeleteText}>Delete Scrapbook and Corrosponding Marker</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonView} onPress={() => {navigation.goBack()}}>
-            <Text style={styles.GoBackText}>Go Back</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
-  )
+            <Text style={styles.DeleteText}>Delete Scrapbook and Corrosponding Marker</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonView} onPress={() => {navigation.push("ScrapbookScreen", {refresh: true, image: route.params.image})}}>
+              <Text style={styles.GoBackText}>Go Back</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    )
+  }
 }
 
 export default ScrapbokScreen
@@ -245,14 +250,15 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   lgntitle: {
-    fontSize: 30,
+    fontSize: 40,
     fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
     width: "90%",
     alignSelf: 'center',
     textAlign: "center",
     color: colors.navy,
     marginBottom: 5,
-    letterSpacing: 1
+    letterSpacing: 1,
+    fontFamily: 'Sketching-Universe',
   },
   titleInput: {
     flexDirection: "row",
@@ -292,27 +298,43 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   AddText: {
-    fontSize: 30,
+    fontSize: 50,
     fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
     width: "100%",
     textAlign: "center",
     color: colors.navy,
-    letterSpacing: 1
+    letterSpacing: 1,
+    fontFamily: 'Sketching-Universe',
   },
   GoBackText: {
-    fontSize: 30,
+    fontSize: 50,
     fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
     width: "100%",
     textAlign: "center",
     color: colors.green,
-    letterSpacing: 1
+    letterSpacing: 1,
+    fontFamily: 'Sketching-Universe',
   },
   DeleteText: {
-    fontSize: 30,
+    fontSize: 40,
     fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
     width: "100%",
     textAlign: "center",
     color: colors.red,
-    letterSpacing: 1
+    letterSpacing: 1,
+    fontFamily: 'Sketching-Universe',
   },
+  updateSrapbookCoordsText: {
+    fontSize: 25,
+    fontFamily: 'Sketching-Universe',
+    color: colors.navy
+  },
+  updateScrapbookNameText: {
+    fontSize: 35,
+    fontFamily: 'Sketching-Universe',
+    color: colors.navy
+  },
+  inputStyle: {
+    fontFamily: 'Handwriting',
+  }
 })

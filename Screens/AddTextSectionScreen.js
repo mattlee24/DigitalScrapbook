@@ -9,6 +9,7 @@ import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
+import PageCoil from '../Components/PageCoil';
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app)
@@ -42,6 +43,7 @@ const AddTextSectionScreen = ({ route, navigation }) => {
             <SafeAreaView style={styles.container}>
                 <ScrollView style={styles.ScrollViewcontainer} showsVerticalScrollIndicator={false}>
                     <View style={styles.formContainer}>
+                        <PageCoil />
                         <Text style={styles.title}>Add Text Section:</Text>
                         <Text style={styles.subtitle}>Setting the same name will result in overwritng a section.</Text>
                         <View style={styles.blur}>
@@ -115,6 +117,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 5,
         alignSelf: 'center',
         marginTop: 10,
+        alignItems: 'center'
     },
     blur: {
         marginVertical: 5,
@@ -131,6 +134,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         letterSpacing: 1,
         fontFamily: 'Sketching-Universe',
+        marginTop: 10
       },
       subtitle: {
         fontSize: 25,

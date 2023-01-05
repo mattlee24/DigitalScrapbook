@@ -1,4 +1,4 @@
-import { Alert, Button, Pressable, ScrollView, StyleSheet, Text, TouchableHighlight, View, Image, TouchableOpacity, AsyncStorage } from 'react-native'
+import { Alert, Button, Pressable, ScrollView, StyleSheet, Text, TouchableHighlight, View, Image, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from "react";
 import colors from '../colors'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -169,6 +169,7 @@ const ScrapbookScreen = ({ route, navigation }) => {
               i = i+1
                 return (
                   <View key={index[0]} style={styles.outerImageViewScrollView}>
+                    <PageCoil />
                     <Image source={{ uri: index[1] }} style={styles.ScrollImage} />
                     <TouchableOpacity style={styles.buttonBin} onPress={() => {deleteImage(index[0])}}>
                       <Ionicons name={"trash-bin"} size={35} color={colors.red}/>
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
   },
   ScrollViewcontainer: {
     width: "100%",
-    marginBottom: 80
+    marginBottom: 80,
   },
   buttonEdit: {
     alignSelf: "center",
@@ -302,7 +303,7 @@ const styles = StyleSheet.create({
     fontSize: 35,
     letterSpacing: 1,
     marginBottom: -20,
-    marginTop: 10,
+    marginTop: 30,
     fontFamily: 'Sketching-Universe',
   },
   textSectionContent: {
@@ -311,7 +312,8 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     textAlign: 'center',
     paddingHorizontal: 45,
-    fontFamily: 'Handwriting'
+    fontFamily: 'Handwriting',
+    marginTop: 20,
   },
   buttonBin: {
     position: "absolute",
@@ -329,11 +331,11 @@ const styles = StyleSheet.create({
   horizontalScrollView: {
     marginHorizontal: 10,
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   ScrollViewOuter: {
     width: "95%",
-    height: 200,
+    height: 220,
     alignItems: "center",
     marginTop: 20,
     borderRadius: 30,
@@ -347,7 +349,9 @@ const styles = StyleSheet.create({
   },
   outerImageViewScrollView: {
     width: 300,
-    height: '100%',
-    marginRight: 10
+    height: '90%',
+    marginRight: 10,
+    alignItems: 'center',
+    marginTop: 10,
   }
 })

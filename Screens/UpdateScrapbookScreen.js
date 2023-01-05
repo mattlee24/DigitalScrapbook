@@ -9,6 +9,7 @@ import { TextInput } from "react-native-gesture-handler";
 import { doc, getDoc, getFirestore, setDoc, deleteDoc, collection, getDocs, query, where } from "firebase/firestore";
 import * as ImagePicker from 'expo-image-picker';
 import { useFonts } from 'expo-font';
+import PageCoil from '../Components/PageCoil';
 
 const ScrapbokScreen = ({ route, navigation }) => {
 
@@ -37,8 +38,8 @@ const ScrapbokScreen = ({ route, navigation }) => {
     const getCurrentTitle = async () => {
       const ScrabookTitle = await getDoc(scrapbookRef);
       setCurrenttitle(ScrabookTitle.id)
-      const markerRef = await getDocs(collection(db, "Users/" + currentUser.uid +"/Markers"));
-      markerRef.forEach((marker) => {
+      const querySnapshot = await getDocs(markerRef);
+      querySnapshot.forEach((marker) => {
         setMarkerToChange(marker.id)
       })
     }
@@ -129,6 +130,7 @@ const ScrapbokScreen = ({ route, navigation }) => {
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.ScrollViewcontainer} showsVerticalScrollIndicator={false}>
           <View style={styles.formContainer}>
+            <PageCoil />
             <Text style={styles.lgntitle}>Change Scrapbook Name:</Text>
             <View style={styles.blur}>
               <View style={styles.titleInput}>
@@ -154,6 +156,7 @@ const ScrapbokScreen = ({ route, navigation }) => {
             </View>
           </View>
           <View style={styles.formContainer}>
+            <PageCoil />
             <Text style={styles.lgntitle}>Change Scrapbook Coordinates:</Text>
             <View style={styles.blur}>
               <View style={styles.titleInput}>
@@ -242,7 +245,8 @@ const styles = StyleSheet.create({
     borderRightWidth: 5,
     borderBottomWidth: 5,
     alignSelf: 'center',
-    marginTop: 10
+    marginTop: 10,
+    alignItems: 'center',
   },
   blur: {
     marginVertical: 5,
@@ -259,6 +263,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     letterSpacing: 1,
     fontFamily: 'Sketching-Universe',
+    marginTop: 10
   },
   titleInput: {
     flexDirection: "row",

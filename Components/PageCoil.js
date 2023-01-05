@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     pageCoil: {
         zIndex: 1,
         flexDirection: 'row',
+        position: 'absolute'
     },
     pinIconLeft: {
         position: 'relative',

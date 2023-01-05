@@ -5,12 +5,18 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { getAuth } from 'firebase/auth';
 import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
+import { getFirestore, doc, setDoc, collection, getDocs, query, where } from "firebase/firestore";
 import AuthStack from '../Navigation/AuthStack';
+import ProfileCard from '../Components/ProfileCard';
 
 const ProfileScreen = ({ navigation }) => {
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app)
+  const db = getFirestore(app)
+  const currentUser = auth.currentUser
+
+  const userRef = doc(db, "users", currentUser.uid);
 
   const signOut = () => {
     auth.signOut()
@@ -22,26 +28,9 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Profile Screen</Text>
-      <Button
-          onPress={signOut}
-          type="outline"
-          raised
-          buttonStyle={{
-            backgroundColor: "#4169E1",
-            borderColor: "#4169E1",
-            borderRadius: 15
-          }}
-          titleStyle={{
-            color:  "white",
-          }}
-          title="Sign Out"
-          titleSize={20}
-          containerStyle={{
-            marginBottom: 20,
-            borderRadius: 15
-          }}
-        />
+      <ProfileCard>
+
+      </ProfileCard>
     </SafeAreaView>
   )
 }
@@ -53,6 +42,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.baige,
     alignItems: 'center',
-    justifyContent: 'center',
   },
 })

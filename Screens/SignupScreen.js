@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Image,
+  PixelRatio,  
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
@@ -19,7 +20,7 @@ import colors from "../colors";
 import * as ImagePicker from "expo-image-picker";
 import CreateAccountLoading from "../Components/CreateAccountLoading";
 import { useFonts } from 'expo-font';
-
+import CountryPicker from 'react-native-country-picker-modal';
 
 export default function SignupScreen({ navigation }) {
 
@@ -34,6 +35,7 @@ export default function SignupScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [profilePic, setProfilePic] = useState(null);
   const [profilePicBlob, setProfilePicBlob] = useState(null);
+  const [country, setCountry] = useState("");
   const [ isLoading, setIsLoading ] = useState(false)
 
   const app = initializeApp(firebaseConfig);
@@ -60,7 +62,7 @@ export default function SignupScreen({ navigation }) {
   };
 
   const onHandleSignup = async () => {
-    if ( firstName != "" & lastName != "" & email != "" & password != ""){
+    if ( firstName != "" & lastName != "" & email != "" & password != "" & country != ""){
       createUserWithEmailAndPassword(auth, email, password)
       .then(async (userCredential) =>{
         setIsLoading(true)
@@ -71,6 +73,7 @@ export default function SignupScreen({ navigation }) {
           lastName: lastName,
           email: email,
           password: password,
+          country: country,
         }
         setDoc(newDoc, docData)
         const storageRef = ref(storage, 'ProfilePictures/' + email);
@@ -211,6 +214,20 @@ export default function SignupScreen({ navigation }) {
                     onChangeText={(text) => setPassword(text)}
                   />
                 </View>
+                <View style={styles.countryPickerView}>
+                  <CountryPicker
+                    onSelect={(value)=> setCountry(value.name)}
+                    translation='eng'
+                    withFilter={true}
+                    withFlagButton={true}
+                    withCountryNameButton={true}
+                  />
+                </View>
+                <View style={styles.countryPickerTextView}>
+                  <Text style={styles.countryText}>
+                    {country}
+                  </Text>
+                </View>
                 <TouchableOpacity
                   onPress={onHandleSignup}
                   style={styles.button}
@@ -288,6 +305,30 @@ const styles = StyleSheet.create({
     alignContent: "center",
     zIndex: 1
   },
+  countryPickerView: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 15,
+    backgroundColor: colors.grey,
+    margin: 10,
+  },
+  countryPickerTextView: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 15,
+    backgroundColor: colors.grey,
+    borderColor: colors.navy,
+    borderWidth: 1,
+    marginTop: 10,
+    borderBottomWidth: 5,
+    borderRightWidth: 5,
+    paddingVertical: 5
+  }, 
+  countryText: {
+    fontFamily: 'Sketching-Universe',
+    fontSize: 30,
+    color: colors.navy
+  },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -318,7 +359,7 @@ const styles = StyleSheet.create({
   textColor: {
     color: colors.navy,
     fontFamily: 'Sketching-Universe',
-    fontSize: 25
+    fontSize: 40
   },
   textColorLogin: {
     color: colors.navy,
@@ -326,7 +367,7 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   title: {
-    fontSize: 80,
+    fontSize: 60,
     paddingHorizontal: 15,
     fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
     width: "100%",

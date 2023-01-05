@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     overflow: (Platform.OS === "ios") ? "visible" : "hidden",
     alignSelf: "center",
     borderWidth: 1, 
-    borderColor: colors.lightBlue,
+    borderColor: colors.navy,
     borderRightWidth: 5,
     borderBottomWidth: 5
   },

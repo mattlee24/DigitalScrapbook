@@ -7,8 +7,6 @@ export default {
     lightnavy: 'rgba(2, 48, 71, 0.5)',
     white: '#ffffff',
     lightBlue: '#a2d2ff',
-    orange: '#fb8500',
-    black: '#000000',
     lightBlack: 'rgba(0, 0, 0, 0.2)',
     green: '#52b788'
 }

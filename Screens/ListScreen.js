@@ -84,6 +84,7 @@ if (fontsLoaded) {
           keyExtractor={(item) => item[0]}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.main} onPress={() => {navigation.push("ScrapbookScreen", {image: item[1]})}}>
+              <PageCoil />
               <Image source={{ uri: item[1] }} style={styles.image}></Image>
               <View style={styles.card}>
                   <Text style={styles.texttitle}>{item[0]}</Text>
@@ -141,7 +142,8 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderRightWidth: 5,
     borderBottomWidth: 5,
-    borderColor: colors.navy
+    borderColor: colors.navy,
+    alignItems: 'center'
   },
   card: {
     backgroundColor: colors.grey,

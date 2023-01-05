@@ -137,7 +137,7 @@ const ScrapbookScreen = ({ route, navigation }) => {
         <ScrollView style={styles.ScrollViewcontainer} showsVerticalScrollIndicator={false}>
           <View style={styles.titleView} >
               <TouchableOpacity style={styles.buttonback}>
-                  <Ionicons name={"arrow-back-circle"} size={45} color={colors.navy} onPress={() => navigation.navigate("HomeScreen")}/>
+                  <Ionicons name={"arrow-back-circle"} size={45} color={colors.navy} onPress={() => navigation.goBack()}/>
               </TouchableOpacity>
               <Text style={styles.title}>{title}</Text>
           </View>

@@ -11,7 +11,7 @@ import PageCoil from '../Components/PageCoil';
 import { useFonts } from 'expo-font';
 import { TextInput } from "react-native-gesture-handler";
 
-const ListScreen = () => {
+const ListScreen = ({ route, navigation }) => {
 
   const [fontsLoaded] = useFonts({
     'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
@@ -83,7 +83,7 @@ if (fontsLoaded) {
           showsVerticalScrollIndicator={false}
           keyExtractor={(item) => item[0]}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.main}>
+            <TouchableOpacity style={styles.main} onPress={() => {navigation.push("ScrapbookScreen", {image: item[1]})}}>
               <Image source={{ uri: item[1] }} style={styles.image}></Image>
               <View style={styles.card}>
                   <Text style={styles.texttitle}>{item[0]}</Text>

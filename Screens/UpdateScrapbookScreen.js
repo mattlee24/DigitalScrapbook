@@ -213,7 +213,7 @@ const ScrapbokScreen = ({ route, navigation }) => {
           >
             <Text style={styles.DeleteText}>Delete Scrapbook and Corrosponding Marker</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonView} onPress={() => {navigation.push("ScrapbookScreen", {refresh: true, image: route.params.image})}}>
+          <TouchableOpacity style={styles.buttonView} onPress={() => {navigation.goBack({refresh: true, image: route.params.image})}}>
               <Text style={styles.GoBackText}>Go Back</Text>
           </TouchableOpacity>
         </ScrollView>

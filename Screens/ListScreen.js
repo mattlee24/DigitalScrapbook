@@ -24,7 +24,9 @@ const ListScreen = () => {
   const currentUser = auth.currentUser
 
   const [ scrapbooks, setScrapbooks ] = useState({})
+  const [ localScrapbooks, setLocalScrapbooks ] = useState({})
   const [ refresh, setRefresh ] = useState(false)
+  const [ value, onChangeText ] = useState('')
 
   let i = 0;
 
@@ -38,7 +40,8 @@ const ListScreen = () => {
         querySnapshot.forEach((item) => {
           scrabooksUpdateList[item.id] = [item.id, item.data().image]
         })
-        setScrapbooks(scrabooksUpdateList)
+        setScrapbooks(Object.values(scrabooksUpdateList))
+        setLocalScrapbooks(Object.values(scrabooksUpdateList))
       } else {
         getScrapbooks()
       }
@@ -46,22 +49,39 @@ const ListScreen = () => {
     getScrapbooks()
   }, []);
 
+  const handleSearch = (text) => {
+    onChangeText(text);
+    let items = localScrapbooks;
+    let newData = items;
+
+    if (text) {
+      newData = items.filter(item => {
+        const itemData = item[0].toLowerCase();
+        const textData = text.toLowerCase();
+        console.log(itemData)
+        return itemData.indexOf(textData) > -1; 
+      });
+    }
+    setScrapbooks(newData);
+    }
+
 if (fontsLoaded) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innercontainer}>
         <TextInput
           style={styles.textInputStyle}
-          // onChangeText={(text) => handleSearch(text)}
+          onChangeText={(text) => handleSearch(text)}
           underlineColorAndroid="transparent"
+          value={value}
           placeholder="Search by name..."
           placeholderTextColor={"grey"}
         />
         <FlatList
           style={styles.flatlist} 
-          data={Object.values(scrapbooks)}
+          data={scrapbooks}
           showsVerticalScrollIndicator={false}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item[0]}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.main}>
               <Image source={{ uri: item[1] }} style={styles.image}></Image>

@@ -24,10 +24,15 @@ const ProfileScreen = ({ navigation }) => {
   const storage = getStorage(app);
 
   const [ userData, setUserData ] = useState({});
-  const [ refresh, setRefresh ] = useState(false)
-  const [ profilePic, setProfilePic ] = useState(null)
+  const [ refresh, setRefresh ] = useState(false);
+  const [ profilePic, setProfilePic ] = useState(null);
+  const [ markerNumber, setMarkerNumber ] = useState(null)
+  const [ scrabookNumber, setScrapbookNumber ] = useState(null)
+  const [ getMarkerandScrapbookNumbers, setGetMarkerandScrapbookNumbers ] = useState(false)
 
   const userRef = doc(db, "Users", currentUser.uid);
+  const ScrapbooksRef =  query(collection(db, "Users/" + currentUser.uid + "/Scrapbooks"));
+  const MarkersRef =  query(collection(db, "Users/" + currentUser.uid + "/Markers"));
 
   useEffect(() => {
     async function getUserData() {
@@ -45,9 +50,29 @@ const ProfileScreen = ({ navigation }) => {
       getDownloadURL(ref(storage, 'ProfilePictures/' + userData.email)).then((url) => {
         setProfilePic(url);
         setRefresh(false)
+        setGetMarkerandScrapbookNumbers(true)
       })
     }
     getUserProfilePic()
+  }
+
+  if (getMarkerandScrapbookNumbers) {
+    async function getMakerNumber() {
+      const querySnapshot = await getDocs(MarkersRef);
+      const markerSnapshot = await getDocs(ScrapbooksRef);
+      let i = 0;
+      let x = 0;
+      querySnapshot.forEach(() => {
+        i = i + 1
+      })
+      markerSnapshot.forEach(() => {
+        x = x + 1
+      })
+      setMarkerNumber(i)
+      setScrapbookNumber(x)
+      setGetMarkerandScrapbookNumbers(false)
+    }
+    getMakerNumber()
   }
 
   const signOut = () => {
@@ -78,14 +103,14 @@ const ProfileScreen = ({ navigation }) => {
           </View>
           <View style={styles.infoOuterView}>
             <View style={styles.infoView}>
-              <Text style={styles.infoNumber}>3</Text>
+              <Text style={styles.infoNumber}>{markerNumber}</Text>
               <Text style={styles.infoText}>Markers</Text>
             </View>
             <View style={styles.infoView}>
               <Text style={styles.textSeparator}>|</Text>
             </View>
             <View style={styles.infoView}>
-              <Text style={styles.infoNumber}>3</Text>
+              <Text style={styles.infoNumber}>{scrabookNumber}</Text>
               <Text style={styles.infoText}>Scrapbooks</Text>
             </View>
           </View>

@@ -216,7 +216,7 @@ export default function SignupScreen({ navigation }) {
                 </View>
                 <View style={styles.countryPickerView}>
                   <CountryPicker
-                    onSelect={(value)=> setCountry(value.name)}
+                    onSelect={(value)=> console.log(value)}
                     translation='eng'
                     withFilter={true}
                     withFlagButton={true}

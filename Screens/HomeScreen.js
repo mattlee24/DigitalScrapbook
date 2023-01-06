@@ -8,13 +8,18 @@ import { getAuth } from 'firebase/auth';
 import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, setDoc, collection, getDocs, query, where } from "firebase/firestore";
-import INITIAL_REGION from '../Components/InitialRegion'
 import CreateScrapbook from '../Components/CreateScrapbook';
 import { Ionicons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
 import Loading from '../Components/Loading';
+import * as Location from 'expo-location';
 
 const HomeScreen = ({ route, navigation }) => {
+
+  const [ location, setLocation ] = useState(null);
+  const [ errorMsg, setErrorMsg ] = useState(null);
+  const [ getLocation, setGetLocation ] = useState(false)
+  const [ initialRegion, setInitialRegion] = useState(null)
 
   const [fontsLoaded] = useFonts({
     'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
@@ -40,9 +45,38 @@ const HomeScreen = ({ route, navigation }) => {
         markersListUpdate[doc.id] = [doc.data().latitude, doc.data().longitude, doc.data().image]
       });
       setMarkersList(markersListUpdate)
+      setGetLocation(true)
     }
     getAllDocs(q)
   }, []);
+
+  if (getLocation) {
+    async function getLocation() {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        setInitialRegion({
+          latitude: 55.578051,
+          longitude: -2.435973,
+          latitudeDelta: 11,
+          longitudeDelta: 11,
+        })
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+      setInitialRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 5,
+        longitudeDelta: 5,
+      })
+      setGetLocation(false)
+    }
+    getLocation()
+  }
 
   if (refresh) {
     const getAllDocs = async (q) => {
@@ -102,51 +136,55 @@ const HomeScreen = ({ route, navigation }) => {
   };
 
   if (fontsLoaded) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.imagePickerView}>
-          <Text style={styles.TextImportant}>
-            IMPORTANT: Make sure your location was on when you took the image, otherwise it will NOT work!
-          </Text>
+    if (initialRegion != null) {
+      return (
+        <View style={styles.container}>
+          <View style={styles.imagePickerView}>
+            <Text style={styles.TextImportant}>
+              IMPORTANT: Make sure your location was on when you took the image, otherwise it will NOT work!
+            </Text>
+          </View>
+          <View style={styles.buttonaddView}>
+            <TouchableOpacity style={styles.buttonadd}>
+              <Ionicons name={"add-circle"} size={100} color={colors.grey} onPress={pickImage}/>
+            </TouchableOpacity>
+          </View>
+          <MapView 
+            style={styles.map} 
+            initialRegion={initialRegion} 
+            mapType={"standard"}
+            clusterColor={colors.navy}
+          >
+            {Object.values(markersList).map(index => {
+              i = i+1
+                return <Marker
+                style={styles.marker}
+                key={i} 
+                coordinate={{
+                  longitude: index[1],
+                  latitude: index[0]
+                }} 
+                pinColor={colors.navy}
+                onCalloutPress={() => {
+                  CreateScrapbook(index[0], index[1], index[2], currentUser.uid)
+                  navigation.push("ScrapbookScreen", {image: index[2]})}
+                }
+              >      
+                <Image source={{ uri: index[2] }} style={styles.markerImage} />                                 
+                <Callout style={styles.callout}>
+                  <Text style={styles.calloutTitle}>Click to Create, View or Edit Scrapbook</Text>
+                  <TouchableOpacity style={styles.calloutButton}>
+                    <Text style={styles.calloutTextImportant}>Create/Edit/View Scrapbook</Text>
+                  </TouchableOpacity>
+                </Callout>
+              </Marker>
+              })}
+          </MapView>
         </View>
-        <View style={styles.buttonaddView}>
-          <TouchableOpacity style={styles.buttonadd}>
-            <Ionicons name={"add-circle"} size={100} color={colors.grey} onPress={pickImage}/>
-          </TouchableOpacity>
-        </View>
-        <MapView 
-          style={styles.map} 
-          initialRegion={INITIAL_REGION} 
-          mapType={"standard"}
-          clusterColor={colors.navy}
-        >
-          {Object.values(markersList).map(index => {
-            i = i+1
-              return <Marker
-              style={styles.marker}
-              key={i} 
-              coordinate={{
-                longitude: index[1],
-                latitude: index[0]
-              }} 
-              pinColor={colors.navy}
-              onCalloutPress={() => {
-                CreateScrapbook(index[0], index[1], index[2], currentUser.uid)
-                navigation.push("ScrapbookScreen", {image: index[2]})}
-              }
-            >      
-              <Image source={{ uri: index[2] }} style={styles.markerImage} />                                 
-              <Callout style={styles.callout}>
-                <Text style={styles.calloutTitle}>Click to Create, View or Edit Scrapbook</Text>
-                <TouchableOpacity style={styles.calloutButton}>
-                  <Text style={styles.calloutTextImportant}>Create/Edit/View Scrapbook</Text>
-                </TouchableOpacity>
-              </Callout>
-            </Marker>
-            })}
-        </MapView>
-      </View>
-    )
+      )
+    } else {
+      <Loading />
+    }
   } else {
     <Loading />
   }

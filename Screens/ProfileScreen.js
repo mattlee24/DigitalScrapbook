@@ -9,6 +9,7 @@ import { getFirestore, doc, setDoc, collection, getDocs, query, where, getDoc } 
 import AuthStack from '../Navigation/AuthStack';
 import { getDownloadURL, getStorage, ref } from '@firebase/storage';
 import { useFonts } from 'expo-font';
+import { Ionicons } from '@expo/vector-icons';
 
 const ProfileScreen = ({ navigation }) => {
 
@@ -102,6 +103,9 @@ const ProfileScreen = ({ navigation }) => {
             </Text>
           </View>
           <View style={styles.infoOuterView}>
+            <View style={styles.iconView}>
+              <Ionicons name={"pin"} size={25} color={colors.navy}/>
+            </View>
             <View style={styles.infoView}>
               <Text style={styles.infoNumber}>{markerNumber}</Text>
               <Text style={styles.infoText}>Markers</Text>
@@ -113,6 +117,12 @@ const ProfileScreen = ({ navigation }) => {
               <Text style={styles.infoNumber}>{scrabookNumber}</Text>
               <Text style={styles.infoText}>Scrapbooks</Text>
             </View>
+            <View style={styles.iconView}>
+              <Ionicons name={"book-outline"} size={25} color={colors.navy}/>
+            </View>
+          </View>
+          <View style={styles.infoView}>
+            <Text style={styles.emailText}>{userData.email}</Text>
           </View>
           <TouchableOpacity
             style={styles.buttonEdit}
@@ -248,4 +258,15 @@ const styles = StyleSheet.create({
     fontFamily: 'Sketching-Universe',
     fontSize: 40
   },
+  iconView: {
+    marginTop: 20
+  },
+   emailText: {
+    marginTop: 40,
+    fontFamily: 'Handwriting',
+    color: colors.navy,
+    fontSize: 30,
+    textDecorationLine: 'underline'
+   }
 })
+

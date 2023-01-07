@@ -128,10 +128,6 @@ const ProfileScreen = ({ navigation }) => {
             <Text style={styles.emailText}>{userData.email}</Text>
           </View>
           <TouchableOpacity
-            style={styles.buttonEdit}
-          ><Text style={styles.EditText}>Edit Details</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
             onPress={signOut}
             style={styles.button}
           ><Text style={styles.signOutText}>Sign Out</Text>
@@ -160,7 +156,8 @@ const styles = StyleSheet.create({
     borderRightWidth: 5,
     borderBottomWidth: 5,
     borderColor: colors.navy,
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingVertical: 50
   },
   imageView: {
     width: 200,
@@ -237,27 +234,6 @@ const styles = StyleSheet.create({
   },
   signOutText: {
     color: colors.red,
-    fontFamily: 'Sketching-Universe',
-    fontSize: 40
-  },
-  buttonEdit: {
-    alignItems: 'center',
-    position: 'absolute',
-    bottom: 0,
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 15,
-    backgroundColor: colors.grey,
-    borderColor: colors.navy,
-    borderWidth: 1,
-    marginTop: 10,
-    borderBottomWidth: 5,
-    borderRightWidth: 5,
-    marginBottom: 80,
-    width: '90%'
-  },
-  EditText: {
-    color: colors.navy,
     fontFamily: 'Sketching-Universe',
     fontSize: 40
   },

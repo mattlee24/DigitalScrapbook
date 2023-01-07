@@ -88,6 +88,9 @@ const ProfileScreen = ({ navigation }) => {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.profileCard}>
+          <TouchableOpacity style={styles.iconRefreshView} onPress={() =>{setGetMarkerandScrapbookNumbers(true)}}>
+            <Ionicons name={"refresh-circle"} size={50} color={colors.navy}/>
+          </TouchableOpacity>
           <View style={styles.imageView}>
             <Image
               source={{ uri: profilePic }}
@@ -260,6 +263,12 @@ const styles = StyleSheet.create({
   },
   iconView: {
     marginTop: 20
+  },
+  iconRefreshView: {
+    position: 'absolute',
+    right: 0,
+    marginTop: 10,
+    marginRight: 10
   },
    emailText: {
     marginTop: 40,

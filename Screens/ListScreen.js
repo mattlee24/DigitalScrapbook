@@ -49,6 +49,24 @@ const ListScreen = ({ route, navigation }) => {
     getScrapbooks()
   }, []);
 
+  if (refresh) {
+    async function getScrapbooks() {
+      const querySnapshot = await getDocs(scrapbookRef);
+      const scrabooksUpdateList = {}
+      if (querySnapshot.size > 0){
+        querySnapshot.forEach((item) => {
+          scrabooksUpdateList[item.id] = [item.id, item.data().image]
+        })
+        setScrapbooks(Object.values(scrabooksUpdateList))
+        setLocalScrapbooks(Object.values(scrabooksUpdateList))
+        setRefresh(false)
+      } else {
+        getScrapbooks()
+      }
+    }
+    getScrapbooks()
+  }
+
   const handleSearch = (text) => {
     onChangeText(text);
     let items = localScrapbooks;
@@ -69,6 +87,9 @@ if (fontsLoaded) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innercontainer}>
+        <TouchableOpacity style={styles.iconRefreshView} onPress={() =>{setRefresh(true)}}>
+          <Ionicons name={"refresh-circle"} size={30} color={colors.navy}/>
+        </TouchableOpacity>
         <TextInput
           style={styles.textInputStyle}
           onChangeText={(text) => handleSearch(text)}
@@ -109,6 +130,12 @@ const styles = StyleSheet.create({
   innercontainer: {
     width: '100%',
     height: '100%',
+  },
+  iconRefreshView: {
+    position: 'absolute',
+    right: 0,
+    marginRight: 15,
+    zIndex: 1,
   },
   textInputStyle: {
     alignSelf: 'center',

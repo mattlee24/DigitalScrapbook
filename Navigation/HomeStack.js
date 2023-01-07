@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import InformationScreen from '../Screens/InformationScreen';
 import ProfileScreen from '../Screens/ProfileScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -27,9 +26,7 @@ const HomeStack = () => {
                         iconName = focused ? "list" : "list-outline";
                     } else if (route.name === "Profile") {
                         iconName = focused ? "person" : "person-outline";
-                    } else if (route.name === "info") {
-                        iconName = focused ? "information-circle" : "information-circle-outline";
-                    }     
+                    }  
                     return (
                         <Ionicons
                             name={iconName}
@@ -44,7 +41,6 @@ const HomeStack = () => {
             <Tab.Screen name="Home" component={HomeScreenStack} />
             <Tab.Screen name="List" component={ListScreenStack} />
             <Tab.Screen name="Profile" component={ProfileScreen} />
-            <Tab.Screen name="info" component={InformationScreen} />
         </Tab.Navigator>
     )
 }

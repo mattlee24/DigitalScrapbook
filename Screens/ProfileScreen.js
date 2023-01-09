@@ -48,8 +48,12 @@ const ProfileScreen = ({ navigation }) => {
 
   if (refresh) {
     async function getUserProfilePic() {
-      getDownloadURL(ref(storage, 'ProfilePictures/' + userData.email)).then((url) => {
+      getDownloadURL(ref(storage, 'ProfilePictures/' + userData.email)).then(async (url) => {
         setProfilePic(url);
+        const querySnapshot = await getDoc(userRef);
+        if (querySnapshot.exists()) {
+          setUserData(querySnapshot.data())
+        };
         setRefresh(false)
         setGetMarkerandScrapbookNumbers(true)
       })
@@ -127,6 +131,11 @@ const ProfileScreen = ({ navigation }) => {
           <View style={styles.infoView}>
             <Text style={styles.emailText}>{userData.email}</Text>
           </View>
+          <TouchableOpacity
+            onPress={() => { navigation.push("UpdateAccountScreen")}}
+            style={styles.editbutton}
+          ><Text style={styles.EditText}>Edit Details</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={signOut}
             style={styles.button}
@@ -232,8 +241,29 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: '90%'
   },
+  editbutton: {
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0,
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 15,
+    backgroundColor: colors.grey,
+    borderColor: colors.navy,
+    borderWidth: 1,
+    marginTop: 10,
+    borderBottomWidth: 5,
+    borderRightWidth: 5,
+    marginBottom: 80,
+    width: '90%'
+  },
   signOutText: {
     color: colors.red,
+    fontFamily: 'Sketching-Universe',
+    fontSize: 40
+  },
+  EditText: {
+    color: colors.navy,
     fontFamily: 'Sketching-Universe',
     fontSize: 40
   },
@@ -247,7 +277,7 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
    emailText: {
-    marginTop: 40,
+    marginTop: 10,
     fontFamily: 'Handwriting',
     color: colors.navy,
     fontSize: 30,

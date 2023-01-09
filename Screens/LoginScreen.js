@@ -37,12 +37,16 @@ export default function LoginScreen({ navigation }) {
   const onLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
     .then(async () => {
-      const currentUser = auth.currentUser
-      const docRef = doc(db, "Users", currentUser.uid);
-      const userData = await getDoc(docRef)
-      Alert.alert("Remember," + " " + userData.data().firstName + ", any images uploaded throughout the app will ONLY work on the device they were uploaded from. Exept profile pictures.")
-      navigation.navigate(HomeStack)
-    })
+        const currentUser = auth.currentUser
+        const docRef = doc(db, "Users", currentUser.uid);
+        const userData = await getDoc(docRef)
+        if (userData.exists()){
+          Alert.alert("Remember," + " " + userData.data().firstName + ", any images uploaded throughout the app will ONLY work on the device they were uploaded from. Exept profile pictures.")
+          navigation.navigate(HomeStack)
+        } else {
+          Alert.alert("User not found")
+        }
+      })
     .catch(error => {
       Alert.alert(error.message)
     })

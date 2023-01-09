@@ -183,10 +183,14 @@ const HomeScreen = ({ route, navigation }) => {
         </View>
       )
     } else {
-      <Loading />
+      return(
+        <Loading />
+      )
     }
   } else {
-    <Loading />
+    return(
+      <Loading />
+    )
   }
 }
 

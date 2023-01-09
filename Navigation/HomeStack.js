@@ -6,6 +6,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import colors from '../colors';
 import HomeScreenStack from './HomeScreenStack';
 import ListScreenStack from './ListScreenStack';
+import ProfileScreenStack from './ProfileScreenStack';
 
 const HomeStack = () => {
 
@@ -40,7 +41,7 @@ const HomeStack = () => {
         >
             <Tab.Screen name="Home" component={HomeScreenStack} />
             <Tab.Screen name="List" component={ListScreenStack} />
-            <Tab.Screen name="Profile" component={ProfileScreen} />
+            <Tab.Screen name="Profile" component={ProfileScreenStack} />
         </Tab.Navigator>
     )
 }

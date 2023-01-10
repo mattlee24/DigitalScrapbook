@@ -6,16 +6,15 @@ import {
   Alert,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Image,
-  PixelRatio,  
+  Image, 
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
-import { getAuth } from 'firebase/auth';
+import { getAuth, deleteUser, updatePassword } from 'firebase/auth';
 import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
 import { doc, getDoc, getFirestore, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytes, deleteObject } from "firebase/storage";
 import colors from "../colors";
 import * as ImagePicker from "expo-image-picker";
 import UpdateAccountLoading from '../Components/UpdateAccountLoading';
@@ -40,12 +39,13 @@ export default function SignupScreen({ navigation }) {
   const [ isLoading, setIsLoading ] = useState(false)
 
   const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app)
-  const db = getFirestore(app)
+  const auth = getAuth(app);
+  const db = getFirestore(app);
   const storage = getStorage(app);
-  const currentUser = auth.currentUser
+  const currentUser = auth.currentUser;
 
   const userRef = doc(db, "Users/", currentUser.uid);
+  const profilePicRef = ref(storage, 'ProfilePictures/' + currentUser.email)
 
   useEffect(() => {
     const getUserDetails = async () => {
@@ -93,10 +93,12 @@ export default function SignupScreen({ navigation }) {
         setIsLoading(true)
         const storageRef = ref(storage, 'ProfilePictures/' + email);
         await uploadBytes(storageRef, profilePicBlob).then(() => {
-          setIsLoading(false)
+          updatePassword(currentUser, password).then(()=> {
+            setIsLoading(false)
+            Alert.alert('Account Updated')
+            navigation.navigate("ProfileScreen")
+          })
         })
-        Alert.alert('Account Updated')
-        navigation.navigate("ProfileScreen")
       }) 
       .catch(error => {
         Alert.alert(error.message)
@@ -107,9 +109,13 @@ export default function SignupScreen({ navigation }) {
   };
 
   const deleteuser = async () => {
-    await deleteDoc(doc(db, "Users/", currentUser.uid)).then(() => {
-      Alert.alert("User Successfully Delete");
-      navigation.navigate(AuthStack);
+    deleteUser(currentUser).then(async () => {
+      deleteObject(profilePicRef).then(async () => {
+        await deleteDoc(doc(db, "Users/", currentUser.uid)).then(() => {
+          Alert.alert("User Successfully Deleted");
+          navigation.navigate(AuthStack);
+        })
+      })
     })
   }
 

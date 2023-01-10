@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
     fontSize: 40
   },
   title: {
-    fontSize: 50,
+    fontSize: Platform.OS === "ios" ? 50 : 30,
     paddingHorizontal: 15,
     fontWeight: (Platform.OS === 'ios') ? "900" : "bold",
     width: "100%",

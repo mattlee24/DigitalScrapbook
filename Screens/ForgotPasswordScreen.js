@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
 import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
 import { doc, getDoc, getFirestore } from "firebase/firestore";
@@ -28,28 +28,19 @@ export default function LoginScreen({ navigation }) {
   });
 
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app)
-  const db = getFirestore(app)
 
-  const onLogin = () => {
-    signInWithEmailAndPassword(auth, email, password)
-    .then(async () => {
-        const currentUser = auth.currentUser
-        const docRef = doc(db, "Users", currentUser.uid);
-        const userData = await getDoc(docRef)
-        if (userData.exists()){
-          Alert.alert("Remember," + " " + userData.data().firstName + ", any images uploaded throughout the app will ONLY work on the device they were uploaded from. Exept profile pictures.")
-          navigation.navigate(HomeStack)
-        } else {
-          Alert.alert("User not found")
-        }
-      })
-    .catch(error => {
-      Alert.alert(error.code)
+  const onResetPassword = () => {
+    sendPasswordResetEmail(auth, email)
+    .then(() => {
+      Alert.alert("Password reset email sent. Please check your junk folder if you cannot find the email.")
+      navigation.navigate("LoginScreen")
     })
+    .catch((error) => {
+      Alert.alert(error.code);
+    });
   };
 
   if (fontsLoaded) {
@@ -60,7 +51,7 @@ export default function LoginScreen({ navigation }) {
         <View style={styles.container}>
           {/* <Image source={{ uri }} style={[styles.image, StyleSheet.absoluteFill]}/> */}
           <View style={styles.lightimage}>
-            <Text style={styles.lgntitle}>Login</Text>
+            <Text style={styles.lgntitle}>Forgot Password</Text>
             <View style={styles.blur}>
               <StatusBar style="dark-content" />
               <View style={styles.lightInput}>
@@ -86,47 +77,17 @@ export default function LoginScreen({ navigation }) {
                   onChangeText={(text) => setEmail(text)}
                 />
               </View>
-              <View style={styles.lightInput}>
-                <MaterialCommunityIcons
-                  style={styles.iconstyle}
-                  name="lock"
-                  size={20}
-                  color={colors.navy}
-                />
-                <TextInput
-                  inputStyle={{
-                    fontSize: 14,
-                  }}
-                  color={colors.navy}
-                  placeholderTextColor={colors.lightnavy}
-                  leftIcon="lock"
-                  placeholder="Password"
-                  cursorColor={colors.navy}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  secureTextEntry={true}
-                  textContentType="password"
-                  value={password}
-                  onChangeText={(text) => setPassword(text)}
-                />
-              </View>
-              <Text
-                onPress={() => navigation.navigate("ForgotPasswordScreen")}
-                style={styles.forgotpassword}
-              >
-                Forgot Password?
-              </Text>
               <TouchableOpacity
-                onPress={onLogin}
+                onPress={onResetPassword}
                 style={styles.button}
               >
-                <Text style={styles.textColor}>Login</Text>
+                <Text style={styles.textColor}>Send Reset Email</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                  onPress={() => navigation.navigate("SignUp")}
+                  onPress={() => navigation.navigate("LoginScreen")}
                   style={styles.buttonCreate}
               >
-                <Text style={styles.textColorCreate}>Don't have an account? Create Account</Text>
+                <Text style={styles.textColorCreate}>Remember? Login</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -201,7 +162,7 @@ const styles = StyleSheet.create({
   textColorCreate: {
     color: colors.navy,
     fontFamily: 'Sketching-Universe',
-    fontSize: 18
+    fontSize: 25
   },
   title: {
     fontSize: Platform.OS === "ios" ? 80 : 30,

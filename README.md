@@ -5,13 +5,9 @@
 #### Project Screenshots:
 
 
-![IMG_0891](https://user-images.githubusercontent.com/55798759/211836593-15ab709c-523b-4248-93b4-3f6626e9d356.PNG) ![IMG_0902](https://user-images.githubusercontent.com/55798759/211836602-279cbc59-9931-47a2-8662-b9d767f13be6.PNG)
+![IMG_0891](https://user-images.githubusercontent.com/55798759/211836593-15ab709c-523b-4248-93b4-3f6626e9d356.PNG) 
 
 ![IMG_0902](https://user-images.githubusercontent.com/55798759/211836602-279cbc59-9931-47a2-8662-b9d767f13be6.PNG)
-
-![IMG_0905](https://user-images.githubusercontent.com/55798759/211836607-19a30bc2-9188-4234-82e8-4b61ad28c731.PNG)
-
-![IMG_0913](https://user-images.githubusercontent.com/55798759/211836615-20bf71ca-8f6a-4b15-b059-fad598a43f9b.PNG)
 
 ![IMG_0914](https://user-images.githubusercontent.com/55798759/211836625-3fcada97-7c4e-4bc1-a4c7-7e6811f87665.PNG)
 

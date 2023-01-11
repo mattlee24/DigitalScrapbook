@@ -2,11 +2,10 @@
 
 ### Digital Scrapbook Created for Ubi Comp Showcase Project
 
-#### Project Screenshots:
+## Project Screenshots
 
 <p float="left">
-  <img src="https://user-images.githubusercontent.com/55798759/211836593-15ab709c-523b-4248-93b4-3f6626e9d356.PNG" width="150" height="300">
-  <img src="https://user-images.githubusercontent.com/55798759/211836602-279cbc59-9931-47a2-8662-b9d767f13be6.PNG" width="150" height="300">
+  
   <img src="https://user-images.githubusercontent.com/55798759/211836625-3fcada97-7c4e-4bc1-a4c7-7e6811f87665.PNG" width="150" height="300">
   <img src="https://user-images.githubusercontent.com/55798759/211836634-d18d5c42-368d-45cd-98ce-646c5d70f40a.PNG" width="150" height="300">
   <img src="https://user-images.githubusercontent.com/55798759/211836646-067c2b4d-a4e1-4219-bbd7-e0c95342f6ef.PNG" width="150" height="300">
@@ -23,6 +22,8 @@
  </p>
  
  <p float="left">
+  <img src="https://user-images.githubusercontent.com/55798759/211836593-15ab709c-523b-4248-93b4-3f6626e9d356.PNG" width="150" height="300">
+  <img src="https://user-images.githubusercontent.com/55798759/211836602-279cbc59-9931-47a2-8662-b9d767f13be6.PNG" width="150" height="300">
   <img src="https://user-images.githubusercontent.com/55798759/211836724-c23b0ec2-e24a-483e-b2e3-a87ceb95d514.PNG" width="150" height="300">
   <img src="https://user-images.githubusercontent.com/55798759/211836726-edd4bb01-9bf0-4ba7-9b41-6ac49bd585b0.PNG" width="150" height="300">
  </p>

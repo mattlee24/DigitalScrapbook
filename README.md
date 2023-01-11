@@ -4,9 +4,11 @@
 
 #### Project Screenshots:
 
-<img src="https://user-images.githubusercontent.com/55798759/211836593-15ab709c-523b-4248-93b4-3f6626e9d356.PNG" width="150" height="300">
-<img src="https://user-images.githubusercontent.com/55798759/211836602-279cbc59-9931-47a2-8662-b9d767f13be6.PNG" width="150" height="300">
-
+<p float="left">
+  <img src="https://user-images.githubusercontent.com/55798759/211836593-15ab709c-523b-4248-93b4-3f6626e9d356.PNG" width="150" height="300">
+  <img src="https://user-images.githubusercontent.com/55798759/211836602-279cbc59-9931-47a2-8662-b9d767f13be6.PNG" width="150" height="300">
+ </p>
+ 
 ![IMG_0914](https://user-images.githubusercontent.com/55798759/211836625-3fcada97-7c4e-4bc1-a4c7-7e6811f87665.PNG)
 
 ![IMG_0915](https://user-images.githubusercontent.com/55798759/211836634-d18d5c42-368d-45cd-98ce-646c5d70f40a.PNG)

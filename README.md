@@ -4,7 +4,7 @@
 
 #### Project Screenshots:
 
-<img src="https://user-images.githubusercontent.com/55798759/211836593-15ab709c-523b-4248-93b4-3f6626e9d356.PNG" width="200" height="300">
+<img src="https://user-images.githubusercontent.com/55798759/211836593-15ab709c-523b-4248-93b4-3f6626e9d356.PNG" width="100" height="300">
 
 ![IMG_0891](https://user-images.githubusercontent.com/55798759/211836593-15ab709c-523b-4248-93b4-3f6626e9d356.PNG)
 

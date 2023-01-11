@@ -1,10 +1,9 @@
 # Digital Scrapbook 
-#### Digital Scrapbook Created for Ubi Comp Showcase Project
+### Digital Scrapbook Created for Ubi Comp Showcase Project
 
 ## Project Screenshots
 
 <p float="left">
-  
   <img src="https://user-images.githubusercontent.com/55798759/211836625-3fcada97-7c4e-4bc1-a4c7-7e6811f87665.PNG" width="150" height="300">
   <img src="https://user-images.githubusercontent.com/55798759/211836634-d18d5c42-368d-45cd-98ce-646c5d70f40a.PNG" width="150" height="300">
   <img src="https://user-images.githubusercontent.com/55798759/211836646-067c2b4d-a4e1-4219-bbd7-e0c95342f6ef.PNG" width="150" height="300">

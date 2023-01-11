@@ -1,7 +1,7 @@
 # Digital Scrapbook 
 ### Digital Scrapbook Created for Ubi Comp Showcase Project
 
-## Project Screenshots
+## Project Screenshots (Taken on Iphone 14 Pro)
  
  ### Authentication
  

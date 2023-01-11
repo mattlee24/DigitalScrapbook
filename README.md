@@ -1,4 +1,5 @@
-# Digital Scrapbook ### - Digital Scrapbook Created for Ubi Comp Showcase Project
+# Digital Scrapbook 
+#### Digital Scrapbook Created for Ubi Comp Showcase Project
 
 ## Project Screenshots
 

@@ -4,6 +4,12 @@ import ScrapbokScreen from '../Screens/ScrapbookScreen';
 import UpdateScrapbookScreen from '../Screens/UpdateScrapbookScreen'
 import AddTextSectionScreen from '../Screens/AddTextSectionScreen';
 
+/**
+  * 
+  * @return The stack navigator for the homeScreen
+  * 
+  */
+
 const HomeScreenStack = () => {
     const Stack = createStackNavigator();
     return (

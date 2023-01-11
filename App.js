@@ -7,6 +7,12 @@ export default function App() {
 
   LogBox.ignoreAllLogs();
 
+  /**
+  * 
+  * @return The main navigator for the application
+  * 
+  */
+
   return (
     <NavigationContainer>
        <RouteNavigator />

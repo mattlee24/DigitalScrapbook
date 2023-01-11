@@ -3,6 +3,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomeStack from './HomeStack';
 import AuthStack from './AuthStack';
 
+/**
+ * 
+ * @return The main navigator for the application
+ * 
+ */
+
 const RouteNavigator = () => {
     const Stack = createStackNavigator();
   return (

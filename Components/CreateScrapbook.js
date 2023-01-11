@@ -3,6 +3,16 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, setDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { Alert } from "react-native";
 
+/**
+  * 
+  * Uses the following @params to upload data to firestore (Creating a new Scrapbook)
+  *
+  * @param latitude 
+  * @param longitude
+  * @param image
+  * @param userID
+  */
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app)
 

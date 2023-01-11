@@ -3,6 +3,12 @@ import React from 'react'
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from '../colors';
 
+/**
+  * 
+  * @returns Book, with the use of IonIcons to be displayed throughout the app
+  * 
+  */
+
 const Book = () => {
   return (
     <MaterialCommunityIcons

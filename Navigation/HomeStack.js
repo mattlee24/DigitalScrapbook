@@ -8,6 +8,12 @@ import HomeScreenStack from './HomeScreenStack';
 import ListScreenStack from './ListScreenStack';
 import ProfileScreenStack from './ProfileScreenStack';
 
+/**
+ * 
+ * @return The main bottomTabNavigator for the app, within HomeStack
+ * 
+ */
+
 const HomeStack = () => {
 
     const Tab = createBottomTabNavigator();

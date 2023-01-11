@@ -4,6 +4,12 @@ import colors from '../colors';
 
 const Loading = () => {
 
+  /**
+  * 
+  * @returns Activity Indicator, to be used to signify loading throughout the app
+  * 
+  */
+
   return (
     <View style={styles.containerLoading}>
         <ActivityIndicator size="large" color={colors.navy} style={styles.ActivityIndicator}/>

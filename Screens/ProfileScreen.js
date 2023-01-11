@@ -13,6 +13,12 @@ import { Ionicons } from '@expo/vector-icons';
 
 const ProfileScreen = ({ navigation }) => {
 
+  /**
+  * 
+  * All the variables needed for the page
+  * 
+  */
+
   const [fontsLoaded] = useFonts({
     'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
     'Handwriting': require('../assets/fonts/Handwriting.ttf'),
@@ -35,6 +41,14 @@ const ProfileScreen = ({ navigation }) => {
   const ScrapbooksRef =  query(collection(db, "Users/" + currentUser.uid + "/Scrapbooks"));
   const MarkersRef =  query(collection(db, "Users/" + currentUser.uid + "/Markers"));
 
+  /**
+  * 
+  * useEffect
+  * 
+  * Runs once each time page is loaded
+  * 
+  */
+
   useEffect(() => {
     async function getUserData() {
       const querySnapshot = await getDoc(userRef);
@@ -45,6 +59,14 @@ const ProfileScreen = ({ navigation }) => {
     }
     getUserData()
   }, []);
+
+  /**
+  * 
+  * Refreshes the page
+  * 
+  * @param refresh
+  * 
+  */
 
   if (refresh) {
     async function getUserProfilePic() {
@@ -60,6 +82,14 @@ const ProfileScreen = ({ navigation }) => {
     }
     getUserProfilePic()
   }
+
+  /**
+  * 
+  * Gets number of markers and scrapbooks
+  * 
+  * @param getMarkerandScrapbookNumbers
+  * 
+  */
 
   if (getMarkerandScrapbookNumbers) {
     async function getMakerNumber() {
@@ -79,6 +109,12 @@ const ProfileScreen = ({ navigation }) => {
     }
     getMakerNumber()
   }
+
+  /**
+  * 
+  * Signs user out and redirects to Login
+  * 
+  */
 
   const signOut = () => {
     auth.signOut()

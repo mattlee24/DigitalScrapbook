@@ -12,6 +12,10 @@ import { useFonts } from 'expo-font';
 
 const ScrapbookScreen = ({ route, navigation }) => {
 
+  /**
+  * All the variables needed for the page
+  */
+
   const [fontsLoaded] = useFonts({
     'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
     'Handwriting': require('../assets/fonts/Handwriting.ttf'),
@@ -31,6 +35,12 @@ const ScrapbookScreen = ({ route, navigation }) => {
 
   const scrapbookRef = query(collection(db, "Users/"+currentUser.uid+"/Scrapbooks"), where("image", "==", route.params.image));
 
+  /**
+  * useEffect
+  * 
+  * Runs once each time page is loaded
+  */
+
   useEffect(() => {
     async function getScrapbook() {
       const querySnapshot = await getDocs(scrapbookRef);
@@ -49,6 +59,13 @@ const ScrapbookScreen = ({ route, navigation }) => {
     }
     getScrapbook()
   }, []);
+
+  /**
+  * If the param has been found, function will be run
+  * Refreshes the page 
+  * 
+  * @param route.params.refresh
+  */
 
   for (let i = 0; i<1; i++){
     try {
@@ -76,6 +93,12 @@ const ScrapbookScreen = ({ route, navigation }) => {
     }
   }
 
+  /**
+  * 
+  * Refreshes the page 
+  * 
+  */
+
   if (refresh) {
     async function getTextSections() {
       if (title == "") {
@@ -94,6 +117,12 @@ const ScrapbookScreen = ({ route, navigation }) => {
         }
       }
     }
+
+    /**
+    * 
+    * Gets all images from Scrapbook
+    * 
+    */
 
     async function getOtherImages() {
       if (title == "") {
@@ -119,11 +148,23 @@ const ScrapbookScreen = ({ route, navigation }) => {
     })
   }
 
+  /**
+  * 
+  * Deleting text section
+  * 
+  */
+
   const deleteTextSection = async (sectionName) => {
     await deleteDoc(doc(db, "Users/" + currentUser.uid +"/Scrapbooks/" + title + "/TextSections", sectionName));
     Alert.alert("Section Deleted");
     setRefresh(true)
   }
+
+  /**
+  * 
+  * Deleting an image
+  * 
+  */
 
   const deleteImage = async (sectionName) => {
     await deleteDoc(doc(db, "Users/" + currentUser.uid +"/Scrapbooks/" + title + "/Images", sectionName));

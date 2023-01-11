@@ -10,6 +10,14 @@ const CreateAccountLoading = () => {
     'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
   });
 
+  /**
+  * 
+  * @param fontsLoaded used to check if the imported fonts have loaded properly
+  * 
+  * @returns Activity Indicator and text, to be used to signify loading on account creation
+  * 
+  */
+
   if (fontsLoaded) {
     return (
       <View style={styles.containerLoading}>

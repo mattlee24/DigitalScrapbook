@@ -3,6 +3,14 @@ import React from 'react'
 import colors from '../colors'
 import { Ionicons } from '@expo/vector-icons';
 
+/**
+ * 
+ * @returns Page Coil to be used throughout the app
+ * 
+ * with the use of Ionicons
+ * 
+ */
+
 const PageCoil = () => {
   return (
     <View style={styles.pageCoil}>

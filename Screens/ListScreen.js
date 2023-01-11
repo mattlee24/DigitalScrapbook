@@ -13,6 +13,12 @@ import { TextInput } from "react-native-gesture-handler";
 
 const ListScreen = ({ route, navigation }) => {
 
+  /**
+  * 
+  * All the variables needed for the page
+  * 
+  */
+
   const [fontsLoaded] = useFonts({
     'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
     'Handwriting': require('../assets/fonts/Handwriting.ttf'),
@@ -32,6 +38,17 @@ const ListScreen = ({ route, navigation }) => {
 
   const scrapbookRef = query(collection(db, "Users/"+currentUser.uid+"/Scrapbooks"));
 
+  /**
+  * 
+  * useEffect
+  * 
+  * Runs once each time page is loaded
+  * 
+  * gets all scrapbooks for current user and places them in a suitable 
+  * format (object) for the flatlist
+  * 
+  */
+
   useEffect(() => {
     async function getScrapbooks() {
       const querySnapshot = await getDocs(scrapbookRef);
@@ -48,6 +65,14 @@ const ListScreen = ({ route, navigation }) => {
     }
     getScrapbooks()
   }, []);
+
+  /**
+  * 
+  * Runs if refresh button pressed
+  * Same function as in useEffect
+  * 
+  * @param refresh
+  */
 
   if (refresh) {
     async function getScrapbooks() {
@@ -66,6 +91,13 @@ const ListScreen = ({ route, navigation }) => {
     }
     getScrapbooks()
   }
+
+  /**
+  * 
+  * Allows user to filter flatlist
+  * 
+  * @param text
+  */
 
   const handleSearch = (text) => {
     onChangeText(text);

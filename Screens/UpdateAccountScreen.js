@@ -24,6 +24,10 @@ import AuthStack from '../Navigation/AuthStack';
 
 export default function SignupScreen({ navigation }) {
 
+  /**
+  * All the variables needed for the page
+  */
+
   const [fontsLoaded] = useFonts({
     'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
     'Handwriting': require('../assets/fonts/Handwriting.ttf'),
@@ -47,6 +51,12 @@ export default function SignupScreen({ navigation }) {
   const userRef = doc(db, "Users/", currentUser.uid);
   const profilePicRef = ref(storage, 'ProfilePictures/' + currentUser.email)
 
+  /**
+  * useEffect
+  * 
+  * Runs once each time page is loaded
+  */
+
   useEffect(() => {
     const getUserDetails = async () => {
       const userData = await getDoc(userRef);
@@ -61,6 +71,11 @@ export default function SignupScreen({ navigation }) {
     }
     getUserDetails()
   }, [])
+
+  /**
+  * Gets image from camer roll,
+  * sets @param profilePicBlob to the resulting uri
+  */
 
   const onChooseImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -79,6 +94,18 @@ export default function SignupScreen({ navigation }) {
       Alert.alert("Image Error")
     }
   };
+
+  /**
+  * Uploads to firestore 
+  * @param firstName
+  * @param lastName
+  * @param email
+  * @param password
+  * @param country
+  * 
+  * Uploads to firebase storage
+  * @param profilePicBlob
+  */
 
   const onHandleUpdate = async () => {
     if ( firstName != "" & lastName != "" & email != "" & password != "" & country != ""){
@@ -107,6 +134,12 @@ export default function SignupScreen({ navigation }) {
       Alert.alert("Don't leave fields empty!")
     }
   };
+
+  /**
+  * Deletes user from firebase
+  * Deletes data from firestore
+  * Deletes profilePic from Firebase Storage
+  */
 
   const deleteuser = async () => {
     deleteUser(currentUser).then(async () => {

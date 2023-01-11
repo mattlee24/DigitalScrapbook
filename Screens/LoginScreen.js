@@ -22,6 +22,12 @@ import { useFonts } from 'expo-font';
 
 export default function LoginScreen({ navigation }) {
 
+  /**
+  * 
+  * All the variables needed for the page
+  * 
+  */
+
   const [fontsLoaded] = useFonts({
     'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
     'Handwriting': require('../assets/fonts/Handwriting.ttf'),
@@ -33,6 +39,17 @@ export default function LoginScreen({ navigation }) {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app)
   const db = getFirestore(app)
+
+  /**
+  * 
+  * Function using the firebase @method signInWithEmailAndPassword
+  * Redirects to HomeStack on authentication success
+  * 
+  * @param auth
+  * @param email
+  * @param password
+  * 
+  */
 
   const onLogin = () => {
     signInWithEmailAndPassword(auth, email, password)

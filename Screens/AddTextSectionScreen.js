@@ -16,6 +16,12 @@ const db = getFirestore(app)
 
 const AddTextSectionScreen = ({ route, navigation }) => {
 
+    /**
+     * 
+     * All the variables needed for the page
+     * 
+     */
+
     const [fontsLoaded] = useFonts({
         'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
         'Handwriting': require('../assets/fonts/Handwriting.ttf'),
@@ -23,6 +29,13 @@ const AddTextSectionScreen = ({ route, navigation }) => {
 
     const [ name, setName ] = useState("")
     const [ text, setText ] = useState("")
+
+    /**
+     * 
+     * Function used to create and add text section to firestore
+     * To be displayed on the 'ScrabookScreen'
+     * 
+     */
 
     const AddTextSection = async () => {
         if ( name != "" && text != ""){

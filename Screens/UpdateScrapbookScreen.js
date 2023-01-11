@@ -13,6 +13,10 @@ import PageCoil from '../Components/PageCoil';
 
 const ScrapbokScreen = ({ route, navigation }) => {
 
+  /**
+  * All the variables needed for the page
+  */
+
   const [fontsLoaded] = useFonts({
     'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
     'Handwriting': require('../assets/fonts/Handwriting.ttf'),
@@ -34,6 +38,12 @@ const ScrapbokScreen = ({ route, navigation }) => {
 
   const markerRef = query(collection(db, "Users/"+currentUser.uid+"/Markers"), where("image", "==", route.params.image));
 
+  /**
+  * useEffect
+  * 
+  * Runs once each time page is loaded
+  */
+
   useEffect(() => {
     const getCurrentTitle = async () => {
       const ScrabookTitle = await getDoc(scrapbookRef);
@@ -45,6 +55,12 @@ const ScrapbokScreen = ({ route, navigation }) => {
     }
     getCurrentTitle()
   }, [])
+
+  /**
+  * Updating the Scrapbook name
+  * 
+  * @param title (Scrapbook name)
+  */
 
   const updateScrapbookName = async () => {
     if (title != "") {
@@ -68,6 +84,16 @@ const ScrapbokScreen = ({ route, navigation }) => {
       Alert.alert("No name given to update");
     }
   }
+
+  /**
+  * Updating the Scrapbook coordinates
+  * 
+  * When marker is uploaded, coordinates aren't always 100% accurate,
+  * thus, ability here to change the location
+  * 
+  * @param longitude
+  * @param latitude
+  */
 
   const updateCoordinates = async () => {
     if (latitude != "" && longitude != "") {
@@ -94,6 +120,12 @@ const ScrapbokScreen = ({ route, navigation }) => {
     }
   }
 
+  /**
+  * Deleting the entire Scrapbook,
+  * all of its contents and the 
+  * Marker
+  */
+
   const deleteScrapbookandMarker = async () => {
     await deleteDoc(doc(db, "Users/" + currentUser.uid +"/Scrapbooks", route.params.id));
     const markersRef = await getDocs(markerRef)
@@ -103,6 +135,10 @@ const ScrapbokScreen = ({ route, navigation }) => {
     Alert.alert("Scrapbook and Marker Deleted")
     navigation.push("HomeScreen", {refresh: true})
   }
+
+  /**
+  * Adding an image to scrapbook
+  */
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({

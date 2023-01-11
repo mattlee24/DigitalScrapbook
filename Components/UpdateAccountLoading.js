@@ -6,9 +6,22 @@ import { useFonts } from 'expo-font';
 
 const UpdateAccountLoading = () => {
 
+  /**
+  * used to check if downloaded fonts have loaded
+  * 
+  * @param fontsLoaded
+  * 
+  */
+
   const [fontsLoaded] = useFonts({
     'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
   });
+
+  /**
+  * 
+  * @returns simple loading page
+  * 
+  */
 
   if (fontsLoaded) {
     return (

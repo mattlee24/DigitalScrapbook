@@ -2,6 +2,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from '../Screens/LoginScreen';
 import ForgotPasswordScreen from '../Screens/ForgotPasswordScreen'
 
+/**
+  * 
+  * @return The stack navigator for the loginScreen
+  * 
+  */
+
 const LoginScreenStack = () => {
     const Stack = createStackNavigator();
     return (

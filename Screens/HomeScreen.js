@@ -16,6 +16,12 @@ import * as Location from 'expo-location';
 
 const HomeScreen = ({ route, navigation }) => {
 
+  /**
+  * 
+  * All the variables needed for the page
+  * 
+  */
+
   const [ location, setLocation ] = useState(null);
   const [ errorMsg, setErrorMsg ] = useState(null);
   const [ getLocation, setGetLocation ] = useState(false)
@@ -37,6 +43,14 @@ const HomeScreen = ({ route, navigation }) => {
 
   const q = query(collection(db, "Users/" + currentUser.uid + "/Markers"), where("userID", "==", currentUser.uid));
 
+  /**
+  * 
+  * useEffect
+  * 
+  * Runs once each time page is loaded
+  * 
+  */
+
   useEffect(() => {
     async function getAllDocs(q) {
       const querySnapshot = await getDocs(q);
@@ -49,6 +63,14 @@ const HomeScreen = ({ route, navigation }) => {
     }
     getAllDocs(q)
   }, []);
+
+  /**
+  * 
+  * Function to get the users location, used for displaying correct mapView
+  *  
+  * @param getLocation
+  * 
+  */
 
   if (getLocation) {
     async function getLocation() {
@@ -78,6 +100,15 @@ const HomeScreen = ({ route, navigation }) => {
     getLocation()
   }
 
+  /**
+  * 
+  * Both functions below used to refresh page incase of changes
+  * 
+  * @param refresh
+  * @param route.params.refresh
+  * 
+  */
+
   if (refresh) {
     const getAllDocs = async (q) => {
       const querySnapshot = await getDocs(q);
@@ -106,6 +137,14 @@ const HomeScreen = ({ route, navigation }) => {
   } catch {
     console.log("Running Correctly")
   }
+
+  /**
+  * 
+  * Gets image from camer roll
+  * 
+  * Adds resulting URI to firestore
+  * 
+  */
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({

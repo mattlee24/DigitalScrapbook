@@ -22,6 +22,12 @@ import { useFonts } from 'expo-font';
 
 export default function LoginScreen({ navigation }) {
 
+  /**
+  * 
+  * All the variables needed for the page
+  * 
+  */
+
   const [fontsLoaded] = useFonts({
     'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
     'Handwriting': require('../assets/fonts/Handwriting.ttf'),
@@ -31,6 +37,16 @@ export default function LoginScreen({ navigation }) {
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app)
+
+  /**
+  * 
+  * Uses the firebase @method sendPasswordResetEmail
+  * to send email to the given email
+  * 
+  * @param auth
+  * @param email
+  * 
+  */
 
   const onResetPassword = () => {
     sendPasswordResetEmail(auth, email)

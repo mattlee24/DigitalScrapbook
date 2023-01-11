@@ -1,3 +1,7 @@
+/**
+* Colors (color palete) used throughout the application
+*/
+
 export default {
     grey: '#ced4da',
     baige: '#faedcd',

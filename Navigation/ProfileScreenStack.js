@@ -2,6 +2,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import ProfileScreen from '../Screens/ProfileScreen';
 import UpdateAccountScreen from '../Screens/UpdateAccountScreen';
 
+/**
+ * 
+ * @return The stack navigator for the profileScreen
+ * 
+ */
+
 const HomeScreenStack = () => {
     const Stack = createStackNavigator();
     return (

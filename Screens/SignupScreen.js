@@ -24,6 +24,10 @@ import CountryPicker from 'react-native-country-picker-modal';
 
 export default function SignupScreen({ navigation }) {
 
+  /**
+  * All the variables needed for the page
+  */
+
   const [fontsLoaded] = useFonts({
     'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
     'Handwriting': require('../assets/fonts/Handwriting.ttf'),
@@ -43,6 +47,11 @@ export default function SignupScreen({ navigation }) {
   const db = getFirestore(app)
   const storage = getStorage(app);
 
+  /**
+  * Gets image from camer roll,
+  * sets @param profilePicBlob to the resulting uri
+  */
+
   const onChooseImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -60,6 +69,18 @@ export default function SignupScreen({ navigation }) {
       Alert.alert("Image Error")
     }
   };
+
+  /**
+  * Uploads to firestore 
+  * @param firstName
+  * @param lastName
+  * @param email
+  * @param password
+  * @param country
+  * 
+  * Uploads to firebase storage
+  * @param profilePicBlob
+  */
 
   const onHandleSignup = async () => {
     if ( firstName != "" & lastName != "" & email != "" & password != "" & country != ""){

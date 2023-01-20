@@ -16,6 +16,7 @@ import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import HomeStack from "../Navigation/HomeStack";
+import HomeScreen from "./HomeScreen";
 import colors from "../colors";
 import Book from "../Components/Book";
 import { useFonts } from 'expo-font';

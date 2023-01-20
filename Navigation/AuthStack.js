@@ -17,8 +17,8 @@ export default function AuthStack() {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Login" component={LoginScreenStack} />
-      <Stack.Screen name="Home" component={HomeStack} />
       <Stack.Screen name="SignUp" component={SignupScreen} />
+      <Stack.Screen name="HomeStack" component={HomeStack} />
     </Stack.Navigator>
   );
 }

@@ -6,7 +6,6 @@ import { getAuth } from 'firebase/auth';
 import { firebaseConfig } from "../Config/firebase";
 import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, setDoc, collection, getDocs, query, where, getDoc } from "firebase/firestore";
-import AuthStack from '../Navigation/AuthStack';
 import { getDownloadURL, getStorage, ref } from '@firebase/storage';
 import { useFonts } from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';

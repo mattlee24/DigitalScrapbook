@@ -60,7 +60,7 @@ export default function LoginScreen({ navigation }) {
         const userData = await getDoc(docRef)
         if (userData.exists()){
           Alert.alert("Remember," + " " + userData.data().firstName + ", any images uploaded throughout the app will ONLY work on the device they were uploaded from. Exept profile pictures.")
-          navigation.navigate("Home")
+          navigation.navigate("HomeStack")
         } else {
           Alert.alert("User not found")
         }

@@ -119,7 +119,7 @@ const ProfileScreen = ({ navigation }) => {
   const signOut = () => {
     auth.signOut()
     .then(() => {
-      navigation.navigate(AuthStack)
+      navigation.navigate("Login")
       Alert.alert('Successfully Logged out')
     })
   };

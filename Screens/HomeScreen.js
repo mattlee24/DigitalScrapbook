@@ -25,12 +25,7 @@ const HomeScreen = ({ route, navigation }) => {
   const [ location, setLocation ] = useState(null);
   const [ errorMsg, setErrorMsg ] = useState(null);
   const [ getLocation, setGetLocation ] = useState(false)
-  const [ initialRegion, setInitialRegion] = useState({
-    latitude: 55.578051,
-    longitude: -2.435973,
-    latitudeDelta: 11,
-    longitudeDelta: 11,
-  })
+  const [ initialRegion, setInitialRegion] = useState({})
 
   const [fontsLoaded] = useFonts({
     'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
@@ -82,7 +77,13 @@ const HomeScreen = ({ route, navigation }) => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       
       if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
+        setErrorMsg('Permission to access location was denied! Region defaulted to UK');
+        setInitialRegion({
+          latitude: 55.578051,
+          longitude: -2.435973,
+          latitudeDelta: 11,
+          longitudeDelta: 11,
+        })
         setGetLocation(false)
       } else {
         let location = await Location.getCurrentPositionAsync({});

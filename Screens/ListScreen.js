@@ -1,4 +1,4 @@
-import { Alert, Button, Pressable, ScrollView, StyleSheet, Text, TouchableHighlight, View, Image, TouchableOpacity, FlatList } from 'react-native'
+import { Alert, Button, Pressable, ScrollView, StyleSheet, Text, TouchableHighlight, View, Image, TouchableOpacity, FlatList, Platform } from 'react-native'
 import React, { useEffect, useState } from "react";
 import colors from '../colors'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -161,13 +161,14 @@ const styles = StyleSheet.create({
   },
   innercontainer: {
     width: '100%',
-    height: '100%',
+    height: Platform.OS === 'ios' ? '100%' : '95%',
   },
   iconRefreshView: {
     position: 'absolute',
     right: 0,
     marginRight: 15,
     zIndex: 1,
+    marginTop: Platform.OS === 'ios' ? 0 : 5,
   },
   textInputStyle: {
     alignSelf: 'center',

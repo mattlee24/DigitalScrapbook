@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, Image, Button, TouchableOpacity, Alert, RefreshControl } from 'react-native'
+import { StyleSheet, Text, View, Pressable, Image, Button, TouchableOpacity, Alert, RefreshControl, Platform } from 'react-native'
 import React, {useState, useEffect} from 'react'
 import colors from '../colors'
 import MapView from 'react-native-map-clustering';
@@ -25,7 +25,12 @@ const HomeScreen = ({ route, navigation }) => {
   const [ location, setLocation ] = useState(null);
   const [ errorMsg, setErrorMsg ] = useState(null);
   const [ getLocation, setGetLocation ] = useState(false)
-  const [ initialRegion, setInitialRegion] = useState(null)
+  const [ initialRegion, setInitialRegion] = useState({
+    latitude: 55.578051,
+    longitude: -2.435973,
+    latitudeDelta: 11,
+    longitudeDelta: 11,
+  })
 
   const [fontsLoaded] = useFonts({
     'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),
@@ -78,24 +83,18 @@ const HomeScreen = ({ route, navigation }) => {
       
       if (status !== 'granted') {
         setErrorMsg('Permission to access location was denied');
+        setGetLocation(false)
+      } else {
+        let location = await Location.getCurrentPositionAsync({});
+        setLocation(location);
         setInitialRegion({
-          latitude: 55.578051,
-          longitude: -2.435973,
-          latitudeDelta: 11,
-          longitudeDelta: 11,
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: 5,
+          longitudeDelta: 5,
         })
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-      setInitialRegion({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 5,
-        longitudeDelta: 5,
-      })
       setGetLocation(false)
+      }
     }
     getLocation()
   }
@@ -167,10 +166,10 @@ const HomeScreen = ({ route, navigation }) => {
         setDoc(newMarker, markerData)
         setRefresh(true)
       } else {
-        Alert.alert("Image Error")
+        Alert.alert("Image Error, no location found!")
       }
     } else {
-      Alert.alert("Image Error")
+      Alert.alert("Image Error, image selection cancelled!")
     }
   };
 
@@ -264,7 +263,7 @@ const styles = StyleSheet.create({
   },
   TextImportant: {
     textAlign: 'center',
-    fontSize: 25,
+    fontSize: Platform.OS === 'ios' ? 25 : 20,
     color: colors.red,
     marginTop: 0,
     padding: 20,
@@ -284,7 +283,6 @@ const styles = StyleSheet.create({
     height: 'auto',
     backgroundColor: colors.grey,
     zIndex: 1,
-    alignSelf: 'left',
     borderRadius: 100,
     borderWidth: 1,
     borderColor: colors.navy,

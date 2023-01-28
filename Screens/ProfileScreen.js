@@ -1,4 +1,4 @@
-import { Alert, Button, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { Alert, Button, StyleSheet, Text, View, Image, TouchableOpacity, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import colors from '../colors'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -127,7 +127,7 @@ const ProfileScreen = ({ navigation }) => {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.profileCard}>
-          <TouchableOpacity style={styles.iconRefreshView} onPress={() =>{setGetMarkerandScrapbookNumbers(true)}}>
+          <TouchableOpacity style={styles.iconRefreshView} onPress={() =>{setRefresh(true)}}>
             <Ionicons name={"refresh-circle"} size={50} color={colors.navy}/>
           </TouchableOpacity>
           <View style={styles.imageView}>
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   },
   profileCard: {
     width: '90%',
-    height: '90%',
+    height: Platform.OS === 'ios' ? '90%' : '87%',
     backgroundColor: colors.grey,
     borderRadius: 25,
     borderWidth: 1,
@@ -220,12 +220,12 @@ const styles = StyleSheet.create({
   },
   nameView:{
     marginTop: 5,
-    width: '100%',
+    maxWidth: '90%',
     height: 'auto',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   nameText: {
-    fontSize: 80,
+    fontSize: Platform.OS === 'ios' ? 80 : 40,
     fontWeight: 'bold',
     color: colors.navy,
     fontFamily: 'Sketching-Universe',
@@ -295,12 +295,12 @@ const styles = StyleSheet.create({
   signOutText: {
     color: colors.red,
     fontFamily: 'Sketching-Universe',
-    fontSize: 40
+    fontSize: Platform.OS === 'ios' ? 40 : 30
   },
   EditText: {
     color: colors.navy,
     fontFamily: 'Sketching-Universe',
-    fontSize: 40
+    fontSize: Platform.OS === 'ios' ? 40 : 30
   },
   iconView: {
     marginTop: 20

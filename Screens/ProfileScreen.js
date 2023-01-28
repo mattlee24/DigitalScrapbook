@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   nameText: {
-    fontSize: Platform.OS === 'ios' ? 80 : 40,
+    fontSize: Platform.OS === 'ios' ? 60 : 40,
     fontWeight: 'bold',
     color: colors.navy,
     fontFamily: 'Sketching-Universe',

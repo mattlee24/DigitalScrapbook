@@ -25,7 +25,7 @@ const HomeScreen = ({ route, navigation }) => {
   const [ location, setLocation ] = useState(null);
   const [ errorMsg, setErrorMsg ] = useState(null);
   const [ getLocation, setGetLocation ] = useState(false)
-  const [ initialRegion, setInitialRegion] = useState({})
+  const [ initialRegion, setInitialRegion] = useState(null)
 
   const [fontsLoaded] = useFonts({
     'Sketching-Universe': require('../assets/fonts/Sketching-Universe.otf'),

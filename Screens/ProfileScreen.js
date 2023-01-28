@@ -9,6 +9,7 @@ import { getFirestore, doc, setDoc, collection, getDocs, query, where, getDoc } 
 import { getDownloadURL, getStorage, ref } from '@firebase/storage';
 import { useFonts } from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
+import Loading from '../Components/Loading';
 
 const ProfileScreen = ({ navigation }) => {
 
@@ -124,61 +125,65 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   if (fontsLoaded) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.profileCard}>
-          <TouchableOpacity style={styles.iconRefreshView} onPress={() =>{setRefresh(true)}}>
-            <Ionicons name={"refresh-circle"} size={50} color={colors.navy}/>
-          </TouchableOpacity>
-          <View style={styles.imageView}>
-            <Image
-              source={{ uri: profilePic }}
-              style={styles.imageProfilePic}
-            />
-          </View> 
-          <View style={styles.nameView}>
-            <Text style={styles.nameText}>
-              {userData.firstName} {userData.lastName}
-            </Text>
-            <Text style={styles.countryText}>
-              {userData.country}
-            </Text>
-          </View>
-          <View style={styles.infoOuterView}>
-            <View style={styles.iconView}>
-              <Ionicons name={"pin"} size={25} color={colors.navy}/>
+    if ( profilePic != null ) {
+      return (
+        <SafeAreaView style={styles.container}>
+          <View style={styles.profileCard}>
+            <TouchableOpacity style={styles.iconRefreshView} onPress={() =>{setRefresh(true)}}>
+              <Ionicons name={"refresh-circle"} size={50} color={colors.navy}/>
+            </TouchableOpacity>
+            <View style={styles.imageView}>
+              <Image
+                source={{ uri: profilePic }}
+                style={styles.imageProfilePic}
+              />
+            </View> 
+            <View style={styles.nameView}>
+              <Text style={styles.nameText}>
+                {userData.firstName} {userData.lastName}
+              </Text>
+              <Text style={styles.countryText}>
+                {userData.country}
+              </Text>
+            </View>
+            <View style={styles.infoOuterView}>
+              <View style={styles.iconView}>
+                <Ionicons name={"pin"} size={25} color={colors.navy}/>
+              </View>
+              <View style={styles.infoView}>
+                <Text style={styles.infoNumber}>{markerNumber}</Text>
+                <Text style={styles.infoText}>Markers</Text>
+              </View>
+              <View style={styles.infoView}>
+                <Text style={styles.textSeparator}>|</Text>
+              </View>
+              <View style={styles.infoView}>
+                <Text style={styles.infoNumber}>{scrabookNumber}</Text>
+                <Text style={styles.infoText}>Scrapbooks</Text>
+              </View>
+              <View style={styles.iconView}>
+                <Ionicons name={"book-outline"} size={25} color={colors.navy}/>
+              </View>
             </View>
             <View style={styles.infoView}>
-              <Text style={styles.infoNumber}>{markerNumber}</Text>
-              <Text style={styles.infoText}>Markers</Text>
+              <Text style={styles.emailText}>{userData.email}</Text>
             </View>
-            <View style={styles.infoView}>
-              <Text style={styles.textSeparator}>|</Text>
-            </View>
-            <View style={styles.infoView}>
-              <Text style={styles.infoNumber}>{scrabookNumber}</Text>
-              <Text style={styles.infoText}>Scrapbooks</Text>
-            </View>
-            <View style={styles.iconView}>
-              <Ionicons name={"book-outline"} size={25} color={colors.navy}/>
-            </View>
+            <TouchableOpacity
+              onPress={() => { navigation.push("UpdateAccountScreen")}}
+              style={styles.editbutton}
+            ><Text style={styles.EditText}>Edit Details</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={signOut}
+              style={styles.button}
+            ><Text style={styles.signOutText}>Sign Out</Text>
+            </TouchableOpacity>
           </View>
-          <View style={styles.infoView}>
-            <Text style={styles.emailText}>{userData.email}</Text>
-          </View>
-          <TouchableOpacity
-            onPress={() => { navigation.push("UpdateAccountScreen")}}
-            style={styles.editbutton}
-          ><Text style={styles.EditText}>Edit Details</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={signOut}
-            style={styles.button}
-          ><Text style={styles.signOutText}>Sign Out</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    )
+        </SafeAreaView>
+      )
+    } else {
+      <Loading />
+    }
   }
 
 }

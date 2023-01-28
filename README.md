@@ -29,9 +29,8 @@
   <img src="https://user-images.githubusercontent.com/55798759/211836711-c6ea9a59-2a89-4d68-8e6a-993949514447.PNG" width="150" height="300">
  </p>
  
- ## Current Publsihed On Expo. As long as you have the app (expoGo) you can follow the link or scan the code with the app (android) or camera (iphone), to launch
+ ## Currently Publsihed On Expo. As long as you have the app (expoGo) you can follow the link or scan the code with the app (android) or camera (iphone), to launch
  
  <img src="https://user-images.githubusercontent.com/55798759/215264403-9fd45cf0-254d-42ac-bc79-2201cac9f4f9.png" width="150" height="150">
- 
  ### exp://exp.host/@matt.lee24/Digital-Scrapbook?release-channel=default
 
